@@ -339,8 +339,8 @@ export class FormManager {
         preferred: true,
         givenName: values.givenName,
         middleName: values.middleName,
-        fathersFamilyName: values.fathersFamilyName,
-        mothersFamilyName: values.mothersFamilyName,
+        familyName: values.fathersFamilyName,
+        familyName2: values.mothersFamilyName,
       },
     ];
 
@@ -350,8 +350,8 @@ export class FormManager {
         preferred: false,
         givenName: values.additionalGivenName,
         middleName: values.additionalMiddleName,
-        fathersFamilyName: values.additionalFathersFamilyName,
-        mothersFamilyName: values.additionalMothersFamilyName,
+        familyName: values.additionalFathersFamilyName,
+        familyName2: values.additionalMothersFamilyName,
       });
     }
 
@@ -426,7 +426,7 @@ export class FormManager {
       deceasedDateTime: patient.person.deathDate,
       name: patient.person?.names?.map((name) => ({
         given: [name.givenName, name.middleName].filter(Boolean),
-        family: name.fathersFamilyName,
+        family: name.familyName,
         //
       })),
       address: patient.person?.addresses.map((address) => ({

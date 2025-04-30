@@ -7,8 +7,8 @@ interface NameValue {
   preferred: boolean;
   givenName: string;
   middleName: string;
-  fathersFamilyName: string;
-  mothersFamilyName: string;
+  familyName: string;
+  familyName2: string;
 }
 
 export interface AttributeValue {

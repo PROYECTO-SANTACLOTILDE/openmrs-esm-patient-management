@@ -57,7 +57,7 @@ export function mapToFhirPatient(patient: SearchedPatient) {
       {
         id: nameId,
         given: [patient.person.personName.givenName, patient.person.personName.middleName],
-        family: patient.person.personName.familyName,
+        family: patient.person.personName.fathersFamilyName,
         text: patient.person.personName.display,
       },
     ],

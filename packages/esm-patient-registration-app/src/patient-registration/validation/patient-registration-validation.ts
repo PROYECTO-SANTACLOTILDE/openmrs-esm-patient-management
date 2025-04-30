@@ -11,13 +11,19 @@ const t = (key: string, value: string) => translateFrom('@openmrs/esm-framework'
 export function getValidationSchema(config: RegistrationConfig) {
   return Yup.object({
     givenName: Yup.string().required(t('givenNameRequired', 'Given name is required')),
-    familyName: Yup.string().required(t('familyNameRequired', 'Family name is required')),
+    fathersFamilyName: Yup.string().required(t('fathersFamilyNameRequired', 'Fathers Family name is required')),
+    mothersFamilyName: Yup.string().required(t('mothersFamilyNameRequired', 'Mothers Family name is required')),
     additionalGivenName: Yup.string().when('addNameInLocalLanguage', {
       is: true,
       then: Yup.string().required(t('givenNameRequired', 'Given name is required')),
       otherwise: Yup.string().notRequired(),
     }),
-    additionalFamilyName: Yup.string().when('addNameInLocalLanguage', {
+    additionalFathersFamilyName: Yup.string().when('addNameInLocalLanguage', {
+      is: true,
+      then: Yup.string().required(t('familyNameRequired', 'Family name is required')),
+      otherwise: Yup.string().notRequired(),
+    }),
+    additionalMothersFamilyName: Yup.string().when('addNameInLocalLanguage', {
       is: true,
       then: Yup.string().required(t('familyNameRequired', 'Family name is required')),
       otherwise: Yup.string().notRequired(),
