@@ -48,7 +48,8 @@ export interface RegistrationConfig {
       displayMiddleName: boolean;
       allowUnidentifiedPatients: boolean;
       defaultUnknownGivenName: string;
-      defaultUnknownFamilyName: string;
+      defaultUnknownFathersFamilyName: string;
+      defaultUnknownMothersFamilyName: string;
       displayCapturePhoto: boolean;
       displayReverseFieldOrder: boolean;
     };
@@ -252,11 +253,17 @@ export const esmPatientRegistrationSchema = {
         _default: 'UNKNOWN',
         _description: 'The given/first name to record for unidentified patients.',
       },
-      defaultUnknownFamilyName: {
+      defaultUnknownFathersFamilyName: {
         _type: Type.String,
         _default: 'UNKNOWN',
-        _description: 'The family/last name to record for unidentified patients.',
+        _description: 'The father’s family/last name to record for unidentified patients.',
       },
+      defaultUnknownMothersFamilyName: {
+        _type: Type.String,
+        _default: 'UNKNOWN',
+        _description: 'The mother’s family/last name to record for unidentified patients.',
+      },
+
       displayCapturePhoto: {
         _type: Type.Boolean,
         _default: true,

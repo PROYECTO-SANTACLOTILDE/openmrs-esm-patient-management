@@ -7,7 +7,8 @@ interface NameValue {
   preferred: boolean;
   givenName: string;
   middleName: string;
-  familyName: string;
+  fathersFamilyName: string;
+  mothersFamilyName: string;
 }
 
 export interface AttributeValue {
@@ -155,7 +156,8 @@ export interface RelationshipValue {
 }
 
 export interface FormValues {
-  additionalFamilyName: string;
+  additionalFathersFamilyName: string;
+  additionalMothersFamilyName: string;
   additionalGivenName: string;
   additionalMiddleName: string;
   addNameInLocalLanguage: boolean;
@@ -171,7 +173,8 @@ export interface FormValues {
   deathDate: string | Date;
   deathTime: string;
   deathTimeFormat: 'AM' | 'PM';
-  familyName: string;
+  fathersFamilyName: string;
+  mothersFamilyName: string;
   gender: string;
   givenName: string;
   identifiers: {

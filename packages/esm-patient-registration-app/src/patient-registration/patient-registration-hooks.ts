@@ -63,7 +63,8 @@ export function useInitialFormValues(
   const { data: encounters } = useInitialEncounters(patientUuid, patientToEdit);
 
   const [initialFormValues, setInitialFormValues] = useState<FormValues>({
-    additionalFamilyName: '',
+    additionalFathersFamilyName: '',
+    additionalMothersFamilyName: '',
     additionalGivenName: '',
     additionalMiddleName: '',
     addNameInLocalLanguage: false,
@@ -74,7 +75,8 @@ export function useInitialFormValues(
     deathDate: undefined,
     deathTime: undefined,
     deathTimeFormat: 'AM',
-    familyName: '',
+    fathersFamilyName: '',
+    mothersFamilyName: '',
     gender: '',
     givenName: '',
     identifiers: {},

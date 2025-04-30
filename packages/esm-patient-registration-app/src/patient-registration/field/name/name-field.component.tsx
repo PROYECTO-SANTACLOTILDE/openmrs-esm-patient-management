@@ -29,7 +29,8 @@ export const NameField = () => {
         displayCapturePhoto,
         allowUnidentifiedPatients,
         defaultUnknownGivenName,
-        defaultUnknownFamilyName,
+        defaultUnknownFathersFamilyName,
+        defaultUnknownMothersFamilyName,
         displayMiddleName,
         displayReverseFieldOrder,
       },
@@ -62,7 +63,9 @@ export const NameField = () => {
       setUnknownPatient('false');
     } else {
       setFieldValue('givenName', defaultUnknownGivenName);
-      setFieldValue('familyName', defaultUnknownFamilyName);
+      setFieldValue('fathersFamilyName', defaultUnknownFathersFamilyName);
+      setFieldValue('mothersFamilyName', defaultUnknownMothersFamilyName);
+
       setUnknownPatient('true');
     }
     setFieldTouched('givenName', true);
@@ -89,11 +92,21 @@ export const NameField = () => {
     />
   );
 
-  const familyNameField = (
+  const fathersFamilyNameField = (
     <Input
-      id="familyName"
-      name="familyName"
-      labelText={t('familyNameLabelText', 'Family Name')}
+      id="fathersFamilyName"
+      name="fathersFamilyName"
+      labelText={t('fathersFamilyNameLabelText', "Father's Family Name")}
+      checkWarning={checkNumber}
+      required
+    />
+  );
+
+  const mothersFamilyNameField = (
+    <Input
+      id="mothersFamilyName"
+      name="mothersFamilyName"
+      labelText={t('mothersFamilyNameLabelText', "Mother's Family Name")}
       checkWarning={checkNumber}
       required
     />
@@ -131,11 +144,13 @@ export const NameField = () => {
               <>
                 {firstNameField}
                 {middleNameField}
-                {familyNameField}
+                {fathersFamilyNameField}
+                {mothersFamilyNameField}
               </>
             ) : (
               <>
-                {familyNameField}
+                {fathersFamilyNameField}
+                {mothersFamilyNameField}
                 {middleNameField}
                 {firstNameField}
               </>
