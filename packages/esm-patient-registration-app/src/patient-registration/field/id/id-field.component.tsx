@@ -13,6 +13,7 @@ import type {
 } from '../../patient-registration.types';
 import IdentifierInput from '../../input/custom-input/identifier/identifier-input.component';
 import IdentifierSelectionOverlay from './identifier-selection-overlay.component';
+import { type RegistrationConfig } from '../../../config-schema';
 import styles from '../field.scss';
 
 export function setIdentifierSource(
@@ -66,7 +67,7 @@ export const Identifiers: React.FC = () => {
   const layout = useLayoutType();
   const [showIdentifierOverlay, setShowIdentifierOverlay] = useState(false);
   const config = useConfig();
-  const { defaultPatientIdentifierTypes } = config;
+  const { defaultPatientIdentifierTypes, initialPatientIdentifierTypes } = config;
   const initialIDAdded = useRef(false);
 
   useEffect(() => {
@@ -89,30 +90,14 @@ export const Identifiers: React.FC = () => {
           );
         });
 
-      if (!initialIDAdded.current) {
-        // Agregamos el identificador DNI por defecto
-        if (!values.identifiers['dni']) {
-          const dniIdentifierType = identifierTypes.find(
-            (type) => type.name === 'DNI' || type.uuid === '550e8400-e29b-41d4-a716-446655440001',
-          );
-
-          if (dniIdentifierType) {
-            identifiers['dni'] = initializeIdentifier(dniIdentifierType, {});
-          } else {
-            identifiers['dni'] = {
-              identifierTypeUuid: '550e8400-e29b-41d4-a716-446655440001',
-              identifierName: 'DNI',
-              preferred: false,
-              initialValue: '',
-              required: true,
-              identifierValue: '',
-              autoGeneration: false,
-              selectedSource: null,
-            };
+      // Agregar tipos iniciales según configuración (solo una vez)
+      if (!initialIDAdded.current && initialPatientIdentifierTypes?.length) {
+        initialPatientIdentifierTypes.forEach((uuid) => {
+          const idType = identifierTypes.find((type) => type.uuid === uuid);
+          if (idType && !values.identifiers[idType.fieldName]) {
+            identifiers[idType.fieldName] = initializeIdentifier(idType, {});
           }
-        }
-
-        // Marcamos que ya hemos agregado el DNI inicialmente
+        });
         initialIDAdded.current = true;
       }
       /*

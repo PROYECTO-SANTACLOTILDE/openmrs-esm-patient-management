@@ -81,6 +81,8 @@ export interface RegistrationConfig {
     submitButton: string;
   };
   defaultPatientIdentifierTypes: Array<string>;
+  initialPatientIdentifierTypes: Array<string>;
+
   registrationObs: {
     encounterTypeUuid: string | null;
     encounterProviderRoleUuid: string;
@@ -387,6 +389,13 @@ export const esmPatientRegistrationSchema = {
       _type: Type.PatientIdentifierTypeUuid,
     },
     _default: [],
+  },
+  initialPatientIdentifierTypes: {
+    _type: Type.Array,
+    _elements: {
+      _type: Type.PatientIdentifierTypeUuid,
+    },
+    _default: ['550e8400-e29b-41d4-a716-446655440001'],
   },
   registrationObs: {
     encounterTypeUuid: {
