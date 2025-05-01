@@ -13,8 +13,8 @@ export interface SearchedPatient {
     personName: {
       display: string;
       givenName: string;
-      fathersFamilyName: string;
-      mothersFamilyName: string;
+      familyName: string;
+      familyName2: string;
       middleName: string;
     };
   };
