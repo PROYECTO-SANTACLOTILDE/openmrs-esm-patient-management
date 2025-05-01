@@ -93,9 +93,9 @@ export const Identifiers: React.FC = () => {
       // Agregar tipos iniciales según configuración (solo una vez)
       if (!isEditing && initialPatientIdentifierTypes?.length) {
         initialPatientIdentifierTypes.forEach((uuid) => {
-          const idType = identifierTypes.find((type) => type.uuid === uuid);
-          if (idType && !values.identifiers[idType.fieldName]) {
-            identifiers[idType.fieldName] = initializeIdentifier(idType, {});
+          const identifierType = identifierTypes.find((type) => type.uuid === uuid);
+          if (identifierType && !values.identifiers[identifierType.fieldName]) {
+            identifiers[identifierType.fieldName] = initializeIdentifier(identifierType, {});
           }
         });
       }
@@ -146,7 +146,7 @@ export const Identifiers: React.FC = () => {
             className={styles.configureIdentifiersButton}
             onClick={() => setShowIdentifierOverlay(true)}
             size={isDesktop(layout) ? 'sm' : 'md'}>
-            {t('configure', 'Configure')} <ArrowRight className={styles.arrowRightIcon} size={16} />
+            {t('selectIdentifier', 'Select Identifier')} <ArrowRight className={styles.arrowRightIcon} size={16} />
           </Button>
         </div>
       </UserHasAccess>
