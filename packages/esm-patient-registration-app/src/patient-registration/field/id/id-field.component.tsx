@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, SkeletonText } from '@carbon/react';
 import { ArrowRight, TrashCan } from '@carbon/react/icons';
@@ -67,7 +67,6 @@ export const Identifiers: React.FC = () => {
   const [showIdentifierOverlay, setShowIdentifierOverlay] = useState(false);
   const config = useConfig();
   const { defaultPatientIdentifierTypes, initialPatientIdentifierTypes } = config;
-  const initialIDAdded = useRef(false);
 
   useEffect(() => {
     if (identifierTypes) {
@@ -89,15 +88,16 @@ export const Identifiers: React.FC = () => {
           );
         });
 
+      const isEditing = Object.keys(initialFormValues.identifiers || {}).length > 0;
+
       // Agregar tipos iniciales según configuración (solo una vez)
-      if (!initialIDAdded.current && initialPatientIdentifierTypes?.length) {
+      if (!isEditing && initialPatientIdentifierTypes?.length) {
         initialPatientIdentifierTypes.forEach((uuid) => {
           const idType = identifierTypes.find((type) => type.uuid === uuid);
           if (idType && !values.identifiers[idType.fieldName]) {
             identifiers[idType.fieldName] = initializeIdentifier(idType, {});
           }
         });
-        initialIDAdded.current = true;
       }
       /*
         Identifier value should only be updated if there is any update in the
@@ -123,13 +123,6 @@ export const Identifiers: React.FC = () => {
   const closeIdentifierSelectionOverlay = useCallback(
     () => setShowIdentifierOverlay(false),
     [setShowIdentifierOverlay],
-  );
-
-  const removeIdentifier = useCallback(
-    (identifierFieldName: string) => {
-      setFieldValue('identifiers', deleteIdentifierType(values.identifiers, identifierFieldName));
-    },
-    [setFieldValue, values.identifiers],
   );
 
   if (isLoading && !isOffline) {
@@ -158,29 +151,10 @@ export const Identifiers: React.FC = () => {
         </div>
       </UserHasAccess>
       <div>
-        {Object.entries(values.identifiers).map(([fieldName, identifier]) => {
-          const patientIdentifierWithRequired = {
-            ...values.identifiers[fieldName],
-            required: true,
-          };
-
-          const identifierType = identifierTypes?.find((type) => type.fieldName === fieldName);
-          const canRemove = !identifierType?.isPrimary && !identifierType?.required;
-
+        {Object.entries(values.identifiers).map(([name, identifier]) => {
           return (
-            <div key={fieldName} style={{ display: 'flex', alignItems: 'center', justifyContent: 'initial' }}>
-              <IdentifierInput fieldName={fieldName} patientIdentifier={patientIdentifierWithRequired} />
-              {canRemove && (
-                <Button
-                  className={styles.deleteIdentifierButton}
-                  kind="ghost"
-                  hasIconOnly
-                  size="md"
-                  onClick={() => removeIdentifier(fieldName)}
-                  iconDescription={t('deleteIdentifierTooltip', 'Delete')}>
-                  <TrashCan size={16} />
-                </Button>
-              )}
+            <div key={name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'initial' }}>
+              <IdentifierInput fieldName={name} patientIdentifier={identifier} />
             </div>
           );
         })}
