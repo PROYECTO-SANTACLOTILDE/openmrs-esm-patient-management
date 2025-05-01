@@ -93,7 +93,7 @@ export async function fetchPatientIdentifierTypesWithSources(): Promise<Array<Pa
 async function fetchPatientIdentifierTypes(): Promise<Array<FetchedPatientIdentifierType>> {
   const [patientIdentifierTypesResponse, primaryIdentifierTypeResponse] = await Promise.all([
     cacheAndFetch(
-      `${restBaseUrl}/patientidentifiertype?v=custom:(display,uuid,name,format,formatDescription,required,uniquenessBehavior)`,
+      `${restBaseUrl}/patientidentifiertype?v=custom:(display,uuid,name,description,format,formatDescription,required,uniquenessBehavior)`,
     ),
     cacheAndFetch(`${restBaseUrl}/metadatamapping/termmapping?v=full&code=emr.primaryIdentifierType`),
   ]);
@@ -146,7 +146,7 @@ async function cacheAndFetch<T = any>(url?: string) {
 function mapPatientIdentifierType(patientIdentifierType, isPrimary) {
   return {
     name: patientIdentifierType.display,
-    fieldName: camelCase(patientIdentifierType.name),
+    fieldName: patientIdentifierType.description,
     required: patientIdentifierType.required,
     uuid: patientIdentifierType.uuid,
     format: patientIdentifierType.format,

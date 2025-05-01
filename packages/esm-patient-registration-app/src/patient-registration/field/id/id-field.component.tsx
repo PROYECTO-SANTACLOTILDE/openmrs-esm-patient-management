@@ -13,7 +13,6 @@ import type {
 } from '../../patient-registration.types';
 import IdentifierInput from '../../input/custom-input/identifier/identifier-input.component';
 import IdentifierSelectionOverlay from './identifier-selection-overlay.component';
-import { type RegistrationConfig } from '../../../config-schema';
 import styles from '../field.scss';
 
 export function setIdentifierSource(
