@@ -186,7 +186,7 @@ export const configSchema = {
       _type: Type.String,
     },
     _description: 'The identifier types to be display on all patient search result page',
-    _default: ['05ee9cf4-7242-4a17-b4d4-00f707265c8a', 'f85081e2-b4be-4e48-b3a4-7994b69bb101'],
+    _default: ['550e8400-e29b-41d4-a716-446655440001'],
   },
   queueTables: {
     columnDefinitions: {
