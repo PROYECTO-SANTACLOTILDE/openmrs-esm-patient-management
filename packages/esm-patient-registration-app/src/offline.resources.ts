@@ -146,7 +146,8 @@ async function cacheAndFetch<T = any>(url?: string) {
 function mapPatientIdentifierType(patientIdentifierType, isPrimary) {
   return {
     name: patientIdentifierType.display,
-    fieldName: patientIdentifierType.description,
+    fieldName: camelCase(patientIdentifierType.name),
+    description: patientIdentifierType.description,
     required: patientIdentifierType.required,
     uuid: patientIdentifierType.uuid,
     format: patientIdentifierType.format,

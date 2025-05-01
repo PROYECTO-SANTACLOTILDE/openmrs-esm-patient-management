@@ -24,6 +24,7 @@ export interface FetchedPatientIdentifierType {
   required: boolean;
   uuid: string;
   fieldName: string;
+  description: string;
   format: string;
   formatDescription?: string;
   isPrimary: boolean;
@@ -234,7 +235,7 @@ export interface PersonAttributeTypeResponse {
   uuid: string;
   display: string;
   name: string;
-  description: string;
+  description?: string;
   format: string;
 }
 

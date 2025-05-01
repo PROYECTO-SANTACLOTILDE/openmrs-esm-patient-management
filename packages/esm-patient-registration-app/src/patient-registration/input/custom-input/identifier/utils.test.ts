@@ -20,6 +20,7 @@ function createIdentifierType(options: IdentifierTypeOptions) {
       },
     ],
     name: 'Identifier Type Name',
+    description: 'Identifier Source Description',
     required: true,
     uuid: 'identifier-type-uuid',
     fieldName: 'identifierFieldName',

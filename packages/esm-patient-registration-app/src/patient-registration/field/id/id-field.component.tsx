@@ -151,10 +151,10 @@ export const Identifiers: React.FC = () => {
         </div>
       </UserHasAccess>
       <div>
-        {Object.entries(values.identifiers).map(([name, identifier]) => {
+        {Object.entries(values.identifiers).map(([fieldName, identifier]) => {
           return (
-            <div key={name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'initial' }}>
-              <IdentifierInput fieldName={name} patientIdentifier={identifier} />
+            <div key={fieldName} style={{ display: 'flex', alignItems: 'center', justifyContent: 'initial' }}>
+              <IdentifierInput fieldName={fieldName} patientIdentifier={identifier} />
             </div>
           );
         })}
