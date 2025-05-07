@@ -3173,45 +3173,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmrs/esm-patient-registration-app@workspace:packages/esm-patient-registration-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-registration-app@workspace:packages/esm-patient-registration-app"
-  dependencies:
-    "@carbon/react": "npm:^1.76.0"
-    classnames: "npm:^2.3.2"
-    formik: "npm:^2.1.5"
-    lodash-es: "npm:^4.17.15"
-    uuid: "npm:^8.3.2"
-    webpack: "npm:^5.74.0"
-    yup: "npm:^0.29.1"
-  peerDependencies:
-    "@openmrs/esm-framework": 6.x
-    dayjs: 1.x
-    react: 18.x
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
-"@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app":
-  version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app"
-  dependencies:
-    "@carbon/react": "npm:^1.76.0"
-    classnames: "npm:^2.3.2"
-    lodash-es: "npm:^4.17.15"
-    react-hook-form: "npm:^7.54.0"
-    webpack: "npm:^5.74.0"
-  peerDependencies:
-    "@openmrs/esm-framework": 6.x
-    react: ^18.1.0
-    react-i18next: 11.x
-    react-router-dom: 6.x
-    swr: 2.x
-  languageName: unknown
-  linkType: soft
-
 "@openmrs/esm-react-utils@npm:6.3.1-pre.2944":
   version: 6.3.1-pre.2944
   resolution: "@openmrs/esm-react-utils@npm:6.3.1-pre.2944"
@@ -7940,9 +7901,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001646":
-  version: 1.0.30001655
-  resolution: "caniuse-lite@npm:1.0.30001655"
-  checksum: 10/98e80bdb5a5e4ac1738df7df14379a51aed2fcf3402b18361ac4902ac8afacf35920498afd0bfb71d6902ad4ab4ccbf2d09c792ec3a4925c2e3d186b803f6bc7
+  version: 1.0.30001717
+  resolution: "caniuse-lite@npm:1.0.30001717"
+  checksum: 10/e47dfd8707ea305baa177f3d3d531df614f5a9ac6335363fc8f86f0be4caf79f5734f3f68b601fee4edd9d79f1e5ffc0931466bb894bf955ed6b1dd5a1c34b1d
   languageName: node
   linkType: hard
 
