@@ -3173,9 +3173,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmrs/esm-patient-registration-app@workspace:packages/esm-patient-registration-app":
+"@pucp-gidis-hiisc/esm-patient-registration-app@workspace:packages/esm-patient-registration-app":
   version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-registration-app@workspace:packages/esm-patient-registration-app"
+  resolution: "@pucp-gidis-hiisc/esm-patient-registration-app@workspace:packages/esm-patient-registration-app"
   dependencies:
     "@carbon/react": "npm:^1.76.0"
     classnames: "npm:^2.3.2"
@@ -3194,9 +3194,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app":
+"@pucp-gidis-hiisc/esm-patient-search-app@workspace:packages/esm-patient-search-app":
   version: 0.0.0-use.local
-  resolution: "@openmrs/esm-patient-search-app@workspace:packages/esm-patient-search-app"
+  resolution: "@pucp-gidis-hiisc/esm-patient-search-app@workspace:packages/esm-patient-search-app"
   dependencies:
     "@carbon/react": "npm:^1.76.0"
     classnames: "npm:^2.3.2"
