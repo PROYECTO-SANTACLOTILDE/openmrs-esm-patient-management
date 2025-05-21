@@ -26,7 +26,7 @@ const DeleteIdentifierConfirmationModal: React.FC<DeleteIdentifierConfirmationMo
         <p>
           {identifierName && identifierValue && (
             <span>
-              <strong>{identifierName}</strong>
+              <strong>{`${identifierName} `}</strong>
               {t('deleteIdentifierModalText', ' has a value of ')} <strong>{identifierValue}</strong>.{' '}
             </span>
           )}
