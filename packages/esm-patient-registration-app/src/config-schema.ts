@@ -367,7 +367,7 @@ export const esmPatientRegistrationSchema = {
         dayOfMonth: {
           _type: Type.Number,
           _description: 'The custom day of the month use on the estimated date of birth',
-          _default: 0,
+          _default: 1,
         },
         month: {
           _type: Type.Number,
