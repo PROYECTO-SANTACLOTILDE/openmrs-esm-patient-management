@@ -34,9 +34,7 @@ const CompactPatientBanner = forwardRef<HTMLDivElement, CompactPatientBannerProp
     (patient: fhir.Patient, index: number) => {
       const patientName = getPatientName(patient);
 
-      // Filtrar identificadores: solo mostrar el autogenerado si no hay otro
       const identifiers = patient.identifier || [];
-      // Se asume que el autogenerado tiene un code específico, por ejemplo '05a29f94-c0ed-11e2-94be-8c13b969e334'
       const AUTO_GENERATED_CODE = config.autoGenerateIdentifier;
       const nonAuto = identifiers.filter(
         (id) => id.type?.coding?.[0]?.code && id.type.coding[0].code !== AUTO_GENERATED_CODE,

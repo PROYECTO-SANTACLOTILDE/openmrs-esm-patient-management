@@ -105,6 +105,7 @@ export interface RegistrationConfig {
   freeTextFieldConceptUuid: string;
 }
 
+//TODO add translations for the address in the built-in sections
 export const builtInSections: Array<SectionDefinition> = [
   {
     id: 'demographics',
@@ -114,7 +115,7 @@ export const builtInSections: Array<SectionDefinition> = [
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
-  { id: 'address', name: 'Address', fields: ['address'] },
+  { id: 'address', name: 'Dirección de Domicilio', fields: ['address'] },
 ];
 
 // These fields are handled specially in field.component.tsx
