@@ -160,7 +160,7 @@ const AddressComponentContainer = ({ children }) => {
       }}>
       <PatientRegistrationContextProvider value={contextValue}>
         <div>
-          <h4 className={styles.productiveHeading02Light}>{t('addressHeader', 'Address')}</h4>
+          <h4 className={styles.productiveHeading02Light}>{t('currentAddressHeader', 'Current address')}</h4>
           <div
             style={{
               paddingBottom: '5%',

@@ -111,9 +111,10 @@ export const builtInSections: Array<SectionDefinition> = [
     name: 'Basic Info',
     fields: ['name', 'gender', 'dob', 'id'],
   },
-  { id: 'contact', name: 'Contact Details', fields: ['address', 'phone', 'mobile', 'email'] },
+  { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
+  { id: 'address', name: 'Address', fields: ['address'] },
 ];
 
 // These fields are handled specially in field.component.tsx
@@ -133,7 +134,7 @@ export const builtInFields = [
 export const esmPatientRegistrationSchema = {
   sections: {
     _type: Type.Array,
-    _default: ['demographics', 'contact', 'relationships'],
+    _default: ['demographics', 'contact', 'relationships', 'address'],
     _description: `An array of strings which are the keys from 'sectionDefinitions' or any of the following built-in sections: '${builtInSections
       .map((s) => s.id)
       .join("', '")}'.`,
