@@ -60,7 +60,7 @@ const CompactPatientBanner = forwardRef<HTMLDivElement, CompactPatientBannerProp
         </ClickablePatientContainer>
       );
     },
-    [patients],
+    [patients, config.autoGenerateIdentifier],
   );
 
   return <div ref={ref}>{fhirMappedPatients.map(renderPatient)}</div>;
