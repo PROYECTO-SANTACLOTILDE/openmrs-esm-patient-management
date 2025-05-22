@@ -76,6 +76,20 @@ export interface RegistrationConfig {
         matches?: string;
       };
     };
+    email: {
+      personAttributeUuid: string;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
+    mobile: {
+      personAttributeUuid: string;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
   };
   links: {
     submitButton: string;
@@ -97,7 +111,7 @@ export const builtInSections: Array<SectionDefinition> = [
     name: 'Basic Info',
     fields: ['name', 'gender', 'dob', 'id'],
   },
-  { id: 'contact', name: 'Contact Details', fields: ['address', 'phone'] },
+  { id: 'contact', name: 'Contact Details', fields: ['address', 'phone', 'mobile', 'email'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
 ];
@@ -110,6 +124,8 @@ export const builtInFields = [
   'id',
   'address',
   'phone',
+  'mobile',
+  'email',
   'causeOfDeath',
   'dateAndTimeOfDeath',
 ] as const;
@@ -370,7 +386,37 @@ export const esmPatientRegistrationSchema = {
         required: { _type: Type.Boolean, _default: false },
         matches: {
           _type: Type.String,
-          _default: null,
+          _default: "^(\\+51\\s?)?(1\\d{7}|[2-8]\\d{6,7})$",
+          _description: 'RegEx para teléfonos fijos peruanos: con o sin +51, 7 u 8 dígitos, Lima (1xxxxxxx) o provincias ([2-8]xxxxxxx).',
+        },
+      },
+    },
+    mobile: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: 'fee4e8ef-aef8-4bb9-8ed0-7ded6055c61f',
+        _description: 'TO CHANGE The UUID of the mobile number person attribute type',
+        validation: {
+        required: { _type: Type.Boolean, _default: false },
+      },
+        matches: {
+          _type: Type.String,
+          _default: "^(\\+51\\s?)?9\\d{8}$",
+          _description: 'RegEx para celulares peruanos: con o sin +51, empieza con 9 y tiene 9 dígitos.',
+        },
+      },
+    },
+    email: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: '4bdf3a33-2f63-11f0-8ab4-1a7535b1b3e8',
+        _description: 'The UUID of the email person attribute type',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
+        matches: {
+          _type: Type.String,
+          _default: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
           _description: 'Optional RegEx for testing the validity of the input.',
         },
       },
