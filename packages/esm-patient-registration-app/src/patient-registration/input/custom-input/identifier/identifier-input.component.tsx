@@ -112,6 +112,11 @@ const IdentifierInput: React.FC<IdentifierInputProps> = ({ patientIdentifier, fi
   const showEditButton = !required && hideInputField && (!!initialValue || manualEntryEnabled);
   const showResetButton =
     (!!initialValue && initialValue !== identifierValue) || (!hideInputField && manualEntryEnabled);
+  // Ocultar identificadores autogenerados
+  if (autoGeneration && !manualEntryEnabled) {
+    return null;
+  }
+
   return (
     <div className={styles.IDInput}>
       {!hideInputField ? (
