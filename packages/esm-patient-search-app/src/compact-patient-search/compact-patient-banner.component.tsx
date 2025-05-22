@@ -24,6 +24,8 @@ interface CompactPatientBannerProps {
 }
 
 const CompactPatientBanner = forwardRef<HTMLDivElement, CompactPatientBannerProps>(({ patients }, ref) => {
+  const config = useConfig<PatientSearchConfig>();
+
   const fhirMappedPatients: Array<fhir.Patient> = useMemo(() => {
     return patients.map(mapToFhirPatient);
   }, [patients]);
@@ -32,12 +34,29 @@ const CompactPatientBanner = forwardRef<HTMLDivElement, CompactPatientBannerProp
     (patient: fhir.Patient, index: number) => {
       const patientName = getPatientName(patient);
 
+      // Filtrar identificadores: solo mostrar el autogenerado si no hay otro
+      const identifiers = patient.identifier || [];
+      // Se asume que el autogenerado tiene un code específico, por ejemplo '05a29f94-c0ed-11e2-94be-8c13b969e334'
+      const AUTO_GENERATED_CODE = config.autoGenerateIdentifier;
+      const nonAuto = identifiers.filter(
+        (id) => id.type?.coding?.[0]?.code && id.type.coding[0].code !== AUTO_GENERATED_CODE,
+      );
+      const filteredIdentifiers =
+        nonAuto.length > 0
+          ? identifiers.filter((id) => id.type?.coding?.[0]?.code !== AUTO_GENERATED_CODE)
+          : identifiers;
+
+      const filteredPatient = {
+        ...patient,
+        identifier: filteredIdentifiers,
+      };
+
       return (
         <ClickablePatientContainer key={patient.id} patient={patients[index]}>
           <div className={styles.patientAvatar} role="img">
             <PatientPhoto patientUuid={patient.id} patientName={patientName} />
           </div>
-          <PatientBannerPatientInfo patient={patient} />
+          <PatientBannerPatientInfo patient={filteredPatient} />
         </ClickablePatientContainer>
       );
     },

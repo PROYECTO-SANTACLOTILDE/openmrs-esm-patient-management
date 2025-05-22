@@ -36,7 +36,7 @@ export const configSchema = {
           min: 0,
         },
         postcode: {
-          enabled: true,
+          enabled: false,
         },
         personAttributes: [
           {
@@ -88,7 +88,7 @@ export const configSchema = {
         enabled: {
           _type: Type.Boolean,
           _description: 'Optional. If true, determines whether to display the postcode field or not. Defaults to true',
-          _default: true,
+          _default: false,
         },
       },
       personAttributes: {
@@ -152,9 +152,13 @@ export const configSchema = {
     _description:
       'A list of identifier types to be displayed in the patient search results as banner tags. Defaults to the OpenMRS ID identifier type.',
     _default: [
-      // DNI identifier type UUID
       '550e8400-e29b-41d4-a716-446655440001',
     ],
+  },
+  autoGenerateIdentifier: {
+    _type: Type.UUID,
+    _description: 'The identifier type to be used for auto-generating identifiers',
+    _default: '05a29f94-c0ed-11e2-94be-8c13b969e334',
   },
 };
 
@@ -190,5 +194,6 @@ export type PatientSearchConfig = {
   contactAttributeType: Array<string>;
   defaultIdentifier: string;
   defaultIdentifierTypes: Array<string>;
+  autoGenerateIdentifier: string;
   includeDead: boolean;
 };
