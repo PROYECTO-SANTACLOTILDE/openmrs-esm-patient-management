@@ -500,10 +500,7 @@ export const esmPatientRegistrationSchema = {
         _default: [
           '8d91a210-c2cc-11de-8d13-0010c6dffdff', // Madre/Hijo
           '8d91a210-c2cc-11de-8d13-0010c6dffd0f', // Padre/Hijo
-          '8d91a01c-c2cc-11de-8d13-0010c6dffd0f', // Hermano/Hermana
-          '5c2f978d-3b7d-493c-9e8f-cb3d1c0b6a55', // Abuelo/Nieto
           '057de23f-3d9c-4314-9391-4452970739c6', // Tutor/Menor de Edad
-          '6b1c5e8f-32f7-41b3-bc2a-8b3e97a6d937', // Esposo/Conviviente
         ],
         _description: 'List of relationship type UUIDs to allow in the relationship dropdown list. If empty, all relationships are shown.',
       },
