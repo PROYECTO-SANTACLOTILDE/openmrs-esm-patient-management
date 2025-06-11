@@ -11,11 +11,13 @@ import {
 import { TrashCan } from '@carbon/react/icons';
 import { FieldArray } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { useConfig } from '@openmrs/esm-framework';
 import { Autosuggest } from '../../input/custom-input/autosuggest/autosuggest.component';
 import { usePatientRegistrationContext } from '../../patient-registration-context';
 import { fetchPerson } from '../../patient-registration.resource';
 import { useResourcesContext } from '../../../resources-context';
 import { type RelationshipValue } from '../../patient-registration.types';
+import { type RegistrationConfig } from '../../../config-schema';
 import sectionStyles from '../section.scss';
 import styles from './relationships.scss';
 
@@ -163,30 +165,38 @@ export const RelationshipsSection = () => {
   const { relationshipTypes } = useResourcesContext();
   const [displayRelationshipTypes, setDisplayRelationshipTypes] = useState<RelationshipType[]>([]);
   const { t } = useTranslation();
+  const config = useConfig<RegistrationConfig>();
 
   useEffect(() => {
     if (relationshipTypes) {
       const tmp: RelationshipType[] = [];
-      relationshipTypes.results.forEach((type) => {
-        const aIsToB = {
-          display: type.displayAIsToB ? type.displayAIsToB : type.displayBIsToA,
-          uuid: type.uuid,
-          direction: 'aIsToB',
-        };
-        const bIsToA = {
-          display: type.displayBIsToA ? type.displayBIsToA : type.displayAIsToB,
-          uuid: type.uuid,
-          direction: 'bIsToA',
-        };
-        aIsToB.display === bIsToA.display
-          ? tmp.push(aIsToB)
-          : bIsToA.display === 'Patient'
-            ? tmp.push(aIsToB, { display: `Patient (${aIsToB.display})`, uuid: type.uuid, direction: 'bIsToA' })
-            : tmp.push(aIsToB, bIsToA);
-      });
+      const allowedRelationshipTypes = config.fieldConfigurations.relationships.allowedRelationshipTypes;
+
+      relationshipTypes.results
+        .filter((type) => allowedRelationshipTypes.length === 0 || allowedRelationshipTypes.includes(type.uuid))
+        .forEach((type) => {
+          const aIsToB = {
+            display: `${type.displayAIsToB}/${type.displayBIsToA}`,
+            uuid: type.uuid,
+            direction: 'aIsToB',
+          };
+          const bIsToA = {
+            display: `${type.displayBIsToA}/${type.displayAIsToB}`,
+            uuid: type.uuid,
+            direction: 'bIsToA',
+          };
+
+          // Si ambas direcciones son iguales (ej: Hermano/Hermano), solo agregamos una
+          if (type.displayAIsToB === type.displayBIsToA) {
+            tmp.push(aIsToB);
+          } else {
+            // Agregamos ambas direcciones
+            tmp.push(aIsToB, bIsToA);
+          }
+        });
       setDisplayRelationshipTypes(tmp);
     }
-  }, [relationshipTypes]);
+  }, [relationshipTypes, config.fieldConfigurations.relationships.allowedRelationshipTypes]);
 
   if (!relationshipTypes) {
     return (
