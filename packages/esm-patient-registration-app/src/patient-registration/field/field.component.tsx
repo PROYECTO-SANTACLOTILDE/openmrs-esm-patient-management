@@ -3,6 +3,7 @@ import { reportError, useConfig } from '@openmrs/esm-framework';
 import { builtInFields, type RegistrationConfig } from '../../config-schema';
 import { AddressComponent } from './address/address-field.component';
 import { CauseOfDeathField } from './cause-of-death/cause-of-death.component';
+import { CivilStatusField } from './civil-status/civil-status-field.component';
 import { CustomField } from './custom-field.component';
 import { DateAndTimeOfDeathField } from './date-and-time-of-death/date-and-time-of-death.component';
 import { DobField } from './dob/dob.component';
@@ -56,6 +57,8 @@ export function Field({ name }: FieldProps) {
       return <EmailField />;
     case 'socialSecurity':
       return <SocialSecurityField />;
+    case 'civilStatus':
+      return <CivilStatusField />;
     default:
       return <CustomField name={name} />;
   }

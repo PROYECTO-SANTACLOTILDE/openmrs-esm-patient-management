@@ -98,6 +98,15 @@ export interface RegistrationConfig {
         matches?: string;
       };
     };
+    civilStatus: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      singleConceptUuid: string;
+      marriageableAge: number;
+      validation?: {
+        required: boolean;
+      };
+    };
   };
   links: {
     submitButton: string;
@@ -118,7 +127,7 @@ export const builtInSections: Array<SectionDefinition> = [
   {
     id: 'demographics',
     name: 'Basic Info',
-    fields: ['id', 'name', 'gender', 'dob'],
+    fields: ['id', 'name', 'gender', 'dob', 'civilStatus'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
   { id: 'insurance', name: 'Insurance Details', fields: ['socialSecurity'] },
@@ -138,6 +147,7 @@ export const builtInFields = [
   'mobile',
   'email',
   'socialSecurity',
+  'civilStatus',
   'causeOfDeath',
   'dateAndTimeOfDeath',
 ] as const;
@@ -451,6 +461,31 @@ export const esmPatientRegistrationSchema = {
           _default: '',
           _description: 'Optional RegEx for testing the validity of the input.',
         },
+      },
+    },
+    civilStatus: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: '8d871f2a-c2cc-11de-8d13-0010c6dffd0f',
+        _description: 'The UUID of the civil status person attribute type',
+      },
+      answerConceptSetUuid: {
+        _type: Type.ConceptUuid,
+        _default: 'aa345a81-3811-4e9c-be18-d6be727623e0',
+        _description: 'The concept set UUID for civil status options',
+      },
+      singleConceptUuid: {
+        _type: Type.ConceptUuid,
+        _default: '798d5304-a301-4fb9-9a55-c568ab843c2d',
+        _description: 'The concept UUID for "soltero/single" status',
+      },
+      marriageableAge: {
+        _type: Type.Number,
+        _default: 18,
+        _description: 'The minimum age for marriage. Below this age, civil status will be automatically set to single.',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
       },
     },
   },
