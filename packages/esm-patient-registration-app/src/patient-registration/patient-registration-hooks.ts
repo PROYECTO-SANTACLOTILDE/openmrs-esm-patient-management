@@ -56,6 +56,7 @@ export function useInitialFormValues(
   patientUuid: string,
 ): [FormValues, Dispatch<FormValues>] {
   const { freeTextFieldConceptUuid } = useConfig<RegistrationConfig>();
+  const config = useConfig<RegistrationConfig>();
   const { data: deathInfo, isLoading: isLoadingDeathInfo } = useInitialPersonDeathInfo(patientUuid);
   const { data: attributes, isLoading: isLoadingAttributes } = useInitialPersonAttributes(patientUuid);
   const { data: identifiers, isLoading: isLoadingIdentifiers } = useInitialPatientIdentifiers(patientUuid);
@@ -164,14 +165,24 @@ export function useInitialFormValues(
   useEffect(() => {
     if (!isLoadingAttributes && attributes) {
       const personAttributes = attributes.reduce(
-        (acc, attribute) => ({
-          ...acc,
-          [attribute.attributeType.uuid]:
-            attribute.attributeType.format === 'org.openmrs.Concept' && typeof attribute.value === 'object'
-              ? attribute.value?.uuid
-              : attribute.value,
-        }),
-        {},
+        (acc, attribute) => {
+          // Find the field name that corresponds to this attribute type UUID
+          const fieldName = getFieldNameForAttributeUuid(attribute.attributeType.uuid, config);
+          if (fieldName) {
+            acc[fieldName] = 
+              attribute.attributeType.format === 'org.openmrs.Concept' && typeof attribute.value === 'object'
+                ? attribute.value?.uuid
+                : attribute.value;
+          } else {
+            // Fallback to UUID if no field name found
+            acc[attribute.attributeType.uuid] = 
+              attribute.attributeType.format === 'org.openmrs.Concept' && typeof attribute.value === 'object'
+                ? attribute.value?.uuid
+                : attribute.value;
+          }
+          return acc;
+        },
+        {} as Record<string, any>,
       );
 
       setInitialFormValues((initialFormValues) => ({
@@ -179,7 +190,7 @@ export function useInitialFormValues(
         attributes: personAttributes,
       }));
     }
-  }, [attributes, isLoadingAttributes]);
+  }, [attributes, isLoadingAttributes, config]);
 
   // Set Initial registration encounters
   useEffect(() => {
@@ -375,4 +386,31 @@ function getPatientAttributeUuidMapForPatient(attributes: Array<PersonAttributeR
     attributeUuidMap[`attribute.${attribute?.attributeType?.uuid}`] = attribute?.uuid;
   });
   return attributeUuidMap;
+}
+
+// Helper function to find field name by attribute UUID
+function getFieldNameForAttributeUuid(attributeUuid: string, config: RegistrationConfig): string | null {
+  // Check if this UUID matches any of the configured field attribute UUIDs
+  if (config.fieldConfigurations.etnia?.personAttributeUuid === attributeUuid) {
+    return 'etnia';
+  }
+  if (config.fieldConfigurations.religion?.personAttributeUuid === attributeUuid) {
+    return 'religion';
+  }
+  if (config.fieldConfigurations.phone?.personAttributeUuid === attributeUuid) {
+    return 'phone';
+  }
+  if (config.fieldConfigurations.mobile?.personAttributeUuid === attributeUuid) {
+    return 'mobile';
+  }
+  if (config.fieldConfigurations.email?.personAttributeUuid === attributeUuid) {
+    return 'email';
+  }
+  if (config.fieldConfigurations.socialSecurity?.personAttributeUuid === attributeUuid) {
+    return 'socialSecurity';
+  }
+  if (config.fieldConfigurations.civilStatus?.personAttributeUuid === attributeUuid) {
+    return 'civilStatus';
+  }
+  return null;
 }

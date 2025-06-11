@@ -40,6 +40,7 @@ const mockIdentifierTypes = [
     required: true,
     uniquenessBehavior: 'UNIQUE' as const,
     uuid: '05a29f94-c0ed-11e2-94be-8c13b969e334',
+    description: 'Primary OpenMRS identifier',
   },
   {
     fieldName: 'idCard',
@@ -50,6 +51,7 @@ const mockIdentifierTypes = [
     required: false,
     uniquenessBehavior: 'UNIQUE' as const,
     uuid: 'b4143563-16cd-4439-b288-f83d61670fc8',
+    description: 'ID Card identifier',
   },
   {
     fieldName: 'legacyId',
@@ -60,6 +62,7 @@ const mockIdentifierTypes = [
     required: false,
     uniquenessBehavior: null,
     uuid: '22348099-3873-459e-a32e-d93b17eda533',
+    description: 'Legacy identifier',
   },
   {
     fieldName: 'oldIdentificationNumber',
@@ -70,6 +73,7 @@ const mockIdentifierTypes = [
     required: false,
     uniquenessBehavior: null,
     uuid: '8d79403a-c2cc-11de-8d13-0010c6dffd0f',
+    description: 'Old identification number',
   },
   {
     fieldName: 'openMrsIdentificationNumber',
@@ -80,6 +84,7 @@ const mockIdentifierTypes = [
     required: false,
     uniquenessBehavior: null,
     uuid: '8d793bee-c2cc-11de-8d13-0010c6dffd0f',
+    description: 'OpenMRS identification number',
   },
 ];
 
@@ -125,7 +130,7 @@ describe('Field', () => {
           defaultUnknownGivenName: 'UNKNOWN',
           defaultUnknownFamilyName: 'UNKNOWN',
         },
-      } as RegistrationConfig['fieldConfigurations'],
+      } as unknown as RegistrationConfig['fieldConfigurations'],
     });
 
     renderWithContext(

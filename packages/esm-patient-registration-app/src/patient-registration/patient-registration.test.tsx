@@ -141,7 +141,8 @@ const mockOpenmrsConfig: RegistrationConfig = {
       displayMiddleName: true,
       allowUnidentifiedPatients: true,
       defaultUnknownGivenName: 'UNKNOWN',
-      defaultUnknownFamilyName: 'UNKNOWN',
+      defaultUnknownFathersFamilyName: 'UNKNOWN',
+      defaultUnknownMothersFamilyName: 'UNKNOWN',
       displayReverseFieldOrder: false,
       displayCapturePhoto: true,
     },
@@ -165,11 +166,58 @@ const mockOpenmrsConfig: RegistrationConfig = {
     causeOfDeath: {
       conceptUuid: 'cause-of-death-concept-uuid',
     },
+    email: {
+      personAttributeUuid: '',
+      validation: {
+        required: false,
+        matches: '',
+      },
+    },
+    mobile: {
+      personAttributeUuid: '',
+      validation: {
+        required: false,
+        matches: '',
+      },
+    },
+    socialSecurity: {
+      personAttributeUuid: '',
+      answerConceptSetUuid: '',
+      validation: {
+        required: false,
+        matches: '',
+      },
+    },
+    civilStatus: {
+      personAttributeUuid: '',
+      answerConceptSetUuid: '',
+      singleStatusConceptUuid: '',
+      marriageableAge: 0,
+    },
+    etnia: {
+      personAttributeUuid: '',
+      answerConceptSetUuid: '',
+      allowOther: false,
+      validation: {
+        required: false,
+        matches: '',
+      },
+    },
+    religion: {
+      personAttributeUuid: '',
+      answerConceptSetUuid: '',
+      allowOther: false,
+      validation: {
+        required: false,
+        matches: '',
+      },
+    },
   },
   links: {
     submitButton: '#',
   },
   defaultPatientIdentifierTypes: [],
+  initialPatientIdentifierTypes: [],
   registrationObs: {
     encounterTypeUuid: null,
     encounterProviderRoleUuid: 'asdf',
@@ -436,6 +484,8 @@ describe('Updating an existing patient record', () => {
         additionalFamilyName: '',
         additionalGivenName: '',
         additionalMiddleName: '',
+        additionalFathersFamilyName: '',
+        additionalMothersFamilyName: '',
         addNameInLocalLanguage: false,
         address: {},
         birthdate: mockPatient.birthDate,

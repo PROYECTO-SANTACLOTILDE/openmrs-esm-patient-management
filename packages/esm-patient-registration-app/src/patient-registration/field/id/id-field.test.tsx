@@ -85,7 +85,10 @@ describe('Identifiers', () => {
   });
 
   it('should render identifier inputs when identifier types are loaded', () => {
-    mockResourcesContextValue.identifierTypes = mockIdentifierTypes;
+    mockResourcesContextValue.identifierTypes = mockIdentifierTypes.map((type) => ({
+      ...type,
+      description: (type as any).description || '',
+    }));
 
     renderWithContext(
       <Formik initialValues={{}} onSubmit={null}>
@@ -107,7 +110,10 @@ describe('Identifiers', () => {
 
   it('should open identifier selection overlay when "Configure" button is clicked', async () => {
     const user = userEvent.setup();
-    mockResourcesContextValue.identifierTypes = mockIdentifierTypes;
+    mockResourcesContextValue.identifierTypes = mockIdentifierTypes.map((type) => ({
+      ...type,
+      description: (type as any).description || '',
+    }));
 
     renderWithContext(
       <Formik initialValues={{}} onSubmit={null}>
