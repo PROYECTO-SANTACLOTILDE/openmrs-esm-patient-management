@@ -12,6 +12,8 @@ import { NameField } from './name/name-field.component';
 import { PhoneField } from './phone/phone-field.component';
 import { MobileField } from './phone/mobile-field.component';
 import { EmailField } from './email/email-field.component';
+import { SocialSecurityField } from './social-security/social-security-field.component';
+import { CivilStatusField } from './civil-status/civil-status-field.component';
 
 export interface FieldProps {
   name: string;
@@ -53,6 +55,10 @@ export function Field({ name }: FieldProps) {
       return <MobileField />;
     case 'email':
       return <EmailField />;
+    case 'socialSecurity':
+      return <SocialSecurityField />;
+    case 'civilStatus':
+      return <CivilStatusField />;
     default:
       return <CustomField name={name} />;
   }

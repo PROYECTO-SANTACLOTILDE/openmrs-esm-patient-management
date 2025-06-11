@@ -28,6 +28,7 @@ export function PersonAttributeField({ fieldDefinition }: PersonAttributeFieldPr
             validationRegex={fieldDefinition.validation?.matches ?? ''}
             label={fieldDefinition.label}
             required={fieldDefinition.validation?.required ?? false}
+            disabled={fieldDefinition.disabled ?? false}
             id={fieldDefinition?.id}
           />
         );
@@ -40,6 +41,7 @@ export function PersonAttributeField({ fieldDefinition }: PersonAttributeFieldPr
             id={fieldDefinition?.id}
             customConceptAnswers={fieldDefinition.customConceptAnswers ?? []}
             required={fieldDefinition.validation?.required ?? false}
+            disabled={fieldDefinition.disabled ?? false}
           />
         );
       case 'org.openmrs.Location':
@@ -50,6 +52,7 @@ export function PersonAttributeField({ fieldDefinition }: PersonAttributeFieldPr
             label={fieldDefinition.label}
             id={fieldDefinition?.id}
             required={fieldDefinition.validation?.required ?? false}
+            disabled={fieldDefinition.disabled ?? false}
           />
         );
       default:

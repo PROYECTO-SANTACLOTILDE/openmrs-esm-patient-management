@@ -16,6 +16,7 @@ export interface FieldDefinition {
   allowFutureDates?: boolean;
   allowPastDates?: boolean;
   showHeading: boolean;
+  disabled?: boolean;
   validation?: {
     required: boolean;
     matches?: string;
@@ -90,6 +91,20 @@ export interface RegistrationConfig {
         matches?: string;
       };
     };
+    socialSecurity: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
+    civilStatus: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      singleStatusConceptUuid: string;
+      marriageableAge: number;
+    };
   };
   links: {
     submitButton: string;
@@ -113,6 +128,7 @@ export const builtInSections: Array<SectionDefinition> = [
     fields: ['name', 'gender', 'dob', 'id'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
+  { id: 'insurances', name: 'Insurance Details', fields: ['socialSecurity'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
   { id: 'address', name: 'Información de Domicilio', fields: ['address'] },
@@ -128,6 +144,8 @@ export const builtInFields = [
   'phone',
   'mobile',
   'email',
+  'socialSecurity',
+  'civilStatus',
   'causeOfDeath',
   'dateAndTimeOfDeath',
 ] as const;
@@ -135,7 +153,7 @@ export const builtInFields = [
 export const esmPatientRegistrationSchema = {
   sections: {
     _type: Type.Array,
-    _default: ['demographics', 'contact', 'relationships', 'address'],
+    _default: ['demographics', 'contact', 'insuranceDetails', 'relationships', 'address'],
     _description: `An array of strings which are the keys from 'sectionDefinitions' or any of the following built-in sections: '${builtInSections
       .map((s) => s.id)
       .join("', '")}'.`,
@@ -388,8 +406,9 @@ export const esmPatientRegistrationSchema = {
         required: { _type: Type.Boolean, _default: false },
         matches: {
           _type: Type.String,
-          _default: "^(\\+51\\s?)?(1\\d{7}|[2-8]\\d{6,7})$",
-          _description: 'RegEx para teléfonos fijos peruanos: con o sin +51, 7 u 8 dígitos, Lima (1xxxxxxx) o provincias ([2-8]xxxxxxx).',
+          _default: '^(\\+51\\s?)?(1\\d{7}|[2-8]\\d{6,7})$',
+          _description:
+            'RegEx para teléfonos fijos peruanos: con o sin +51, 7 u 8 dígitos, Lima (1xxxxxxx) o provincias ([2-8]xxxxxxx).',
         },
       },
     },
@@ -399,11 +418,11 @@ export const esmPatientRegistrationSchema = {
         _default: 'fee4e8ef-aef8-4bb9-8ed0-7ded6055c61f',
         _description: 'TO CHANGE The UUID of the mobile number person attribute type',
         validation: {
-        required: { _type: Type.Boolean, _default: false },
-      },
+          required: { _type: Type.Boolean, _default: false },
+        },
         matches: {
           _type: Type.String,
-          _default: "^(\\+51\\s?)?9\\d{8}$",
+          _default: '^(\\+51\\s?)?9\\d{8}$',
           _description: 'RegEx para celulares peruanos: con o sin +51, empieza con 9 y tiene 9 dígitos.',
         },
       },
@@ -418,9 +437,51 @@ export const esmPatientRegistrationSchema = {
         required: { _type: Type.Boolean, _default: false },
         matches: {
           _type: Type.String,
-          _default: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
+          _default: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$",
           _description: 'Optional RegEx for testing the validity of the input.',
         },
+      },
+    },
+    socialSecurity: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: 'd4e5f6g7-8910-1112-1314-151617181920',
+        _description: 'The UUID of the social security number person attribute type',
+      },
+      answerConceptSetUuid: {
+        _type: Type.UUID,
+        _default: '355ee63a-a773-47ab-9841-2505b71dec13',
+        _description: '',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
+        matches: {
+          _type: Type.String,
+          _default: '^[0-9]{8}$',
+          _description: 'RegEx para DNI peruano: exactamente 8 dígitos.',
+        },
+      },
+    },
+    civilStatus: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: '8d871f2a-c2cc-11de-8d13-0010c6dffd0f',
+        _description: 'The UUID of the civil status person attribute type.',
+      },
+      answerConceptSetUuid: {
+        _type: Type.UUID,
+        _default: 'aa345a81-3811-4e9c-be18-d6be727623e0',
+        _description: 'Concept set UUID for civil status options',
+      },
+      singleStatusConceptUuid: {
+        _type: Type.UUID,
+        _default: '798d5304-a301-4fb9-9a55-c568ab843c2d',
+        _description: 'The concept UUID for single/unmarried civil status',
+      },
+      marriageableAge: {
+        _type: Type.Number,
+        _default: 18,
+        _description: 'Minimum age for marriage - patients below this age will automatically have single status',
       },
     },
   },

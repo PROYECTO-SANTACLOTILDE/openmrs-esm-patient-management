@@ -13,6 +13,7 @@ export interface LocationPersonAttributeFieldProps {
   label?: string;
   locationTag: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export function LocationPersonAttributeField({
@@ -21,6 +22,7 @@ export function LocationPersonAttributeField({
   label,
   locationTag,
   required,
+  disabled = false,
 }: LocationPersonAttributeFieldProps) {
   const { t } = useTranslation();
   const fieldName = `attributes.${personAttributeType.uuid}`;
@@ -86,6 +88,7 @@ export function LocationPersonAttributeField({
                 placeholder={t('searchLocationPersonAttribute', 'Search location')}
                 onInputChange={handleInputChange}
                 required={required}
+                disabled={disabled}
                 onChange={handleSelect}
                 selectedItem={selectedItem}
                 invalid={errors[fieldName] && touched[fieldName]}

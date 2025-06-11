@@ -20,6 +20,7 @@
   "confirmIdentifierDeletionText": "Are you sure you want to remove this identifier?",
   "contactSection": "Contact Details",
   "createNewPatient": "Create new patient",
+  "currentAddressHeader": "Dirección Actual",
   "dateOfBirthLabelText": "Date of birth",
   "deathCauseRequired": "Cause of death is required",
   "deathDateInFuture": "Death date cannot be in future",
@@ -118,5 +119,8 @@
   "updatePatientSuccessSnackbarSubtitle": "The patient's information has been successfully updated",
   "updatePatientSuccessSnackbarTitle": "Patient Details Updated",
   "yearsEstimateRequired": "Estimated years required",
-  "yes": "Yes"
+  "yes": "Yes",
+  "civilStatusLabel": "Civil Status",
+  "selectCivilStatus": "Select civil status",
+  "civilStatusMinorNote": "Automatic civil status: Single (under {{age}} years old)"
 }
