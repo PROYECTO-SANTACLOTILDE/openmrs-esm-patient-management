@@ -109,19 +109,11 @@ export interface RegistrationConfig {
       personAttributeUuid: string;
       answerConceptSetUuid: string;
       allowOther: boolean;
-      validation?: {
-        required: boolean;
-        matches?: string;
-      };
     };
     religion: {
       personAttributeUuid: string;
       answerConceptSetUuid: string;
       allowOther: boolean;
-      validation?: {
-        required: boolean;
-        matches?: string;
-      };
     };
   };
   links: {
@@ -478,7 +470,7 @@ export const esmPatientRegistrationSchema = {
         matches: {
           _type: Type.String,
           _default: '^[0-9]{8}$',
-          _description: 'RegEx para DNI peruano: exactamente 8 dígitos.',
+          _description: '',
         },
       },
     },
@@ -520,14 +512,6 @@ export const esmPatientRegistrationSchema = {
         _default: true,
         _description: 'Whether to allow custom/other values not in the concept set',
       },
-      validation: {
-        required: { _type: Type.Boolean, _default: false },
-        matches: {
-          _type: Type.String,
-          _default: '',
-          _description: 'Optional RegEx for testing the validity of the input.',
-        },
-      },
     },
     religion: {
       personAttributeUuid: {
@@ -544,14 +528,6 @@ export const esmPatientRegistrationSchema = {
         _type: Type.Boolean,
         _default: true,
         _description: 'Whether to allow custom/other values not in the concept set',
-      },
-      validation: {
-        required: { _type: Type.Boolean, _default: false },
-        matches: {
-          _type: Type.String,
-          _default: '',
-          _description: 'Optional RegEx for testing the validity of the input.',
-        },
       },
     },
   },

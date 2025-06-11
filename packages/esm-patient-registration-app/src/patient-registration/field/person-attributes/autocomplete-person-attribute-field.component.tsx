@@ -1,225 +1,154 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { ComboBox, InlineLoading } from '@carbon/react';
-import { useField } from 'formik';
+import React, { useEffect, useMemo, useState } from 'react';
+import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import useSWR from 'swr';
-import { openmrsFetch, restBaseUrl, type FetchResponse } from '@openmrs/esm-framework';
-import { type FieldDefinition } from '../../../config-schema';
+import { Field } from 'formik';
+import { Layer, ComboBox, SkeletonText } from '@carbon/react';
+import { reportError } from '@openmrs/esm-framework';
+import { type PersonAttributeTypeResponse } from '../../patient-registration.types';
+import { useConceptAnswers } from '../field.resource';
+import styles from './../field.scss';
 
-interface AutocompletePersonAttributeFieldProps {
-  fieldDefinition: FieldDefinition & {
-    answerConceptSetUuid?: string;
-    allowOther?: boolean;
-  };
-  predefinedOptions?: Array<{ value: string; label: string }>;
-  placeholder?: string;
+export interface AutocompletePersonAttributeFieldProps {
+  id: string;
+  personAttributeType: PersonAttributeTypeResponse;
+  answerConceptSetUuid: string;
+  label?: string;
+  customConceptAnswers: Array<{ uuid: string; label?: string }>;
+  required: boolean;
+  disabled?: boolean;
 }
 
 interface ConceptAnswer {
-  uuid: string;
-  display: string;
-}
-
-interface ConceptSet {
-  uuid: string;
-  display: string;
-  setMembers?: Array<ConceptAnswer>;
-  answers?: Array<ConceptAnswer>;
+  id: string;
+  text: string;
 }
 
 export function AutocompletePersonAttributeField({
-  fieldDefinition,
-  predefinedOptions = [],
-  placeholder,
+  id,
+  personAttributeType,
+  answerConceptSetUuid,
+  label,
+  customConceptAnswers,
+  required,
+  disabled = false,
 }: AutocompletePersonAttributeFieldProps) {
+  const { data: conceptAnswers, isLoading: isLoadingConceptAnswers } = useConceptAnswers(
+    customConceptAnswers.length ? '' : answerConceptSetUuid,
+  );
+
   const { t } = useTranslation();
-  // Use the correct field name format that matches other person attribute fields
-  const fieldName = `attributes.${fieldDefinition.uuid}`;
-  const [field, meta, helpers] = useField(fieldName);
-  const [inputValue, setInputValue] = useState('');
+  const fieldName = `attributes.${personAttributeType.uuid}`;
+  const [error, setError] = useState(false);
 
-  // Fetch concept answers if answerConceptSetUuid is provided
-  const { data: conceptData, isLoading } = useSWR<FetchResponse<ConceptSet>>(
-    fieldDefinition.answerConceptSetUuid
-      ? `${restBaseUrl}/concept/${fieldDefinition.answerConceptSetUuid}?v=full`
-      : null,
-    openmrsFetch,
-  );
-
-  // Combine predefined options with concept answers
-  const allOptions = useMemo(() => {
-    const conceptAnswers = conceptData?.data?.setMembers || conceptData?.data?.answers || [];
-    const conceptOptions = conceptAnswers.map((answer) => ({
-      value: answer.uuid,
-      label: answer.display,
-    }));
-
-    // Merge predefined options with concept options, removing duplicates
-    const combinedOptions = [...predefinedOptions];
-    conceptOptions.forEach((conceptOption) => {
-      if (!combinedOptions.some((option) => option.value === conceptOption.value)) {
-        combinedOptions.push(conceptOption);
-      }
-    });
-
-    return combinedOptions.sort((a, b) => a.label.localeCompare(b.label));
-  }, [conceptData, predefinedOptions]);
-
-  // Find selected item based on current field value
-  const selectedItem = useMemo(() => {
-    if (!field.value) return null;
-
-    // First try to find by value (UUID or exact match)
-    const foundByValue = allOptions.find((option) => option.value === field.value);
-    if (foundByValue) return foundByValue;
-
-    // Try to find by label (for reverse lookup)
-    const foundByLabel = allOptions.find((option) => option.label === field.value);
-    if (foundByLabel) return foundByLabel;
-
-    // For concept-based fields, try to find by display name from the concept data
-    if (fieldDefinition.answerConceptSetUuid && conceptData?.data) {
-      const conceptAnswers = conceptData.data.setMembers || conceptData.data.answers || [];
-      const foundConcept = conceptAnswers.find(
-        (answer) => answer.uuid === field.value || answer.display === field.value,
-      );
-      if (foundConcept) {
-        return { value: foundConcept.uuid, label: foundConcept.display };
-      }
-    }
-
-    // If allowOther is enabled and we have a custom value, create a temporary item
-    if (fieldDefinition.allowOther && field.value) {
-      return { value: field.value, label: field.value };
-    }
-
-    return null;
-  }, [field.value, allOptions, fieldDefinition.allowOther, fieldDefinition.answerConceptSetUuid, conceptData]);
-
-  // Sync inputValue with field value when editing existing data
+  // Validation and error handling
   useEffect(() => {
-    if (field.value && !inputValue) {
-      // If we have a field value but no input value, we might be loading existing data
-      const existingOption = allOptions.find((option) => option.value === field.value);
-      if (existingOption) {
-        // Don't set inputValue here as it interferes with ComboBox behavior
-        // The selectedItem will handle the display
-      } else if (fieldDefinition.allowOther) {
-        // For custom values, the selectedItem will show the custom value
+    if (!answerConceptSetUuid && !customConceptAnswers.length) {
+      reportError(
+        t(
+          'autocompletePersonAttributeNoAnswerSet',
+          `The person attribute field '{{autocompletePersonAttributeFieldId}}' is of type 'autocomplete' but has been defined without an answer concept set UUID. The 'answerConceptSetUuid' key is required.`,
+          { autocompletePersonAttributeFieldId: id },
+        ),
+      );
+      setError(true);
+    }
+  }, [answerConceptSetUuid, customConceptAnswers, id, t]);
+
+  useEffect(() => {
+    if (!isLoadingConceptAnswers && !customConceptAnswers.length) {
+      if (!conceptAnswers) {
+        reportError(
+          t(
+            'autocompletePersonAttributeAnswerSetInvalid',
+            `The autocomplete person attribute field '{{autocompletePersonAttributeFieldId}}' has been defined with an invalid answer concept set UUID '{{answerConceptSetUuid}}'.`,
+            { autocompletePersonAttributeFieldId: id, answerConceptSetUuid },
+          ),
+        );
+        setError(true);
+      }
+      if (conceptAnswers?.length === 0) {
+        reportError(
+          t(
+            'autocompletePersonAttributeAnswerSetEmpty',
+            `The autocomplete person attribute field '{{autocompletePersonAttributeFieldId}}' has been defined with an answer concept set UUID '{{answerConceptSetUuid}}' that does not have any concept answers.`,
+            {
+              autocompletePersonAttributeFieldId: id,
+              answerConceptSetUuid,
+            },
+          ),
+        );
+        setError(true);
       }
     }
-  }, [field.value, allOptions, inputValue, fieldDefinition.allowOther]);
+  }, [isLoadingConceptAnswers, conceptAnswers, customConceptAnswers, t, id, answerConceptSetUuid]);
 
-  // Filter options based on input
-  const filteredOptions = useMemo(() => {
-    if (!inputValue.trim()) return allOptions;
-
-    return allOptions.filter((option) => option.label.toLowerCase().includes(inputValue.toLowerCase()));
-  }, [inputValue, allOptions]);
-
-  const handleSelectionChange = useCallback(
-    ({ selectedItem }) => {
-      if (selectedItem) {
-        helpers.setValue(selectedItem.value);
-        setInputValue('');
-      } else {
-        // Clear the field when no item is selected
-        helpers.setValue('');
-        setInputValue('');
-      }
-      helpers.setTouched(true);
-    },
-    [helpers],
-  );
-
-  const handleInputChange = useCallback(
-    (value: string) => {
-      setInputValue(value);
-
-      // If the input is empty, clear the field
-      if (!value || value.trim() === '') {
-        helpers.setValue('');
-        helpers.setTouched(true);
-        return;
-      }
-
-      // For allowOther mode, we don't automatically set values from typing
-      // Let the user type freely and only set value on explicit selection or blur
-      if (fieldDefinition.allowOther) {
-        // Don't automatically set values while typing
-        return;
-      }
-
-      // For non-allowOther mode, only set value if there's an exact match
-      const exactMatch = allOptions.find((opt) => opt.label.toLowerCase() === value.toLowerCase());
-      if (exactMatch) {
-        helpers.setValue(exactMatch.value);
-        helpers.setTouched(true);
-      }
-    },
-    [fieldDefinition.allowOther, allOptions, helpers],
-  );
-
-  const shouldFilterItem = useCallback(({ item, inputValue }) => {
-    if (!inputValue) return true;
-    return item.label.toLowerCase().includes(inputValue.toLowerCase());
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    // When allowOther is enabled and user has typed something that doesn't match existing options
-    // save the custom value on blur
-    if (fieldDefinition.allowOther && inputValue && !field.value) {
-      const exactMatch = allOptions.find((opt) => opt.label.toLowerCase() === inputValue.toLowerCase());
-      if (!exactMatch) {
-        helpers.setValue(inputValue);
-        helpers.setTouched(true);
-      }
+  // Prepare answers list for ComboBox
+  const items = useMemo(() => {
+    if (customConceptAnswers.length) {
+      return customConceptAnswers.map((answer) => ({
+        id: answer.uuid,
+        text: answer.label || '',
+      }));
     }
-  }, [fieldDefinition.allowOther, inputValue, field.value, allOptions, helpers]);
+    return isLoadingConceptAnswers || !conceptAnswers
+      ? []
+      : conceptAnswers
+          .map((answer) => ({
+            id: answer.uuid,
+            text: answer.display || '',
+          }))
+          .sort((a, b) => a.text.localeCompare(b.text));
+  }, [customConceptAnswers, conceptAnswers, isLoadingConceptAnswers]);
 
-  if (isLoading) {
+  if (error) {
+    return null;
+  }
+
+  if (isLoadingConceptAnswers) {
     return (
-      <div className="omrs-input-group">
-        <InlineLoading description={t('loadingOptions', 'Cargando opciones...')} />
+      <div className={classNames(styles.customField, styles.halfWidthInDesktopView)}>
+        <SkeletonText />
       </div>
     );
   }
 
-  const effectivePlaceholder =
-    placeholder ||
-    (fieldDefinition.allowOther
-      ? t('typeOrSelectOption', 'Escriba una opción personalizada o seleccione de la lista')
-      : t('selectFromList', 'Seleccione de la lista'));
-
-  const helperText = fieldDefinition.allowOther
-    ? t('customValueAllowed', 'Puede escribir una opción personalizada si no encuentra la deseada')
-    : t('selectFromAvailableOptions', 'Seleccione una opción de la lista disponible');
-
   return (
-    <div className="omrs-input-group">
-      <ComboBox
-        id={fieldDefinition.id}
-        name={fieldName}
-        items={filteredOptions}
-        itemToString={(item) => item?.label || ''}
-        placeholder={effectivePlaceholder}
-        titleText={fieldDefinition.label}
-        helperText={helperText}
-        selectedItem={selectedItem}
-        onChange={handleSelectionChange}
-        onInputChange={handleInputChange}
-        onBlur={handleBlur}
-        shouldFilterItem={shouldFilterItem}
-        allowCustomValue={fieldDefinition.allowOther}
-        invalid={meta.touched && !!meta.error}
-        invalidText={meta.error}
-        disabled={fieldDefinition.disabled}
-        size="md"
-        direction="bottom"
-        light={false}
-        warn={false}
-        warnText=""
-      />
+    <div className={classNames(styles.customField, styles.halfWidthInDesktopView)}>
+      <Layer>
+        <Field name={fieldName}>
+          {({ field, form: { touched, errors, setFieldValue }, meta }) => {
+            const hasError = errors[fieldName] && touched[fieldName];
+
+            return (
+              <ComboBox
+                id={id}
+                titleText={label ?? personAttributeType?.display}
+                placeholder={t('searchOrSelect', 'Search or select an option')}
+                items={items}
+                itemToString={(item) => (item ? item.text : '')}
+                selectedItem={items.find((item) => item.id === field.value) || null}
+                onChange={({ selectedItem }) => {
+                  setFieldValue(fieldName, selectedItem?.id || '');
+                }}
+                onInputChange={(inputValue) => {
+                  // If input doesn't match any item, clear the value
+                  const matchingItem = items.find((item) => item.text.toLowerCase() === inputValue.toLowerCase());
+                  if (!matchingItem && inputValue !== '') {
+                    setFieldValue(fieldName, '');
+                  }
+                }}
+                disabled={disabled}
+                invalid={hasError}
+                invalidText={hasError ? errors[fieldName] : ''}
+                shouldFilterItem={({ item, inputValue }) => {
+                  if (!inputValue) return true;
+                  return item.text.toLowerCase().includes(inputValue.toLowerCase());
+                }}
+              />
+            );
+          }}
+        </Field>
+      </Layer>
     </div>
   );
 }

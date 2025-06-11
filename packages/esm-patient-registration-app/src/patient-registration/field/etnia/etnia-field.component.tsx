@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useConfig } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { AutocompletePersonAttributeField } from '../person-attributes/autocomplete-person-attribute-field.component';
@@ -8,19 +8,23 @@ export function EtniaField() {
   const config = useConfig<RegistrationConfig>();
   const { t } = useTranslation();
 
-  const fieldDefinition = {
-    id: 'etnia',
-    type: 'person attribute',
+  const personAttributeType = {
     uuid: config.fieldConfigurations.etnia.personAttributeUuid,
-    label: t('etnia', 'Etnia'),
-    answerConceptSetUuid: config.fieldConfigurations.etnia.answerConceptSetUuid,
-    showHeading: false,
+    display: t('etnia', 'Etnia'),
+    name: 'etnia',
+    description: 'Patient ethnicity',
+    format: 'org.openmrs.Concept',
   };
 
   return (
     <AutocompletePersonAttributeField
-      fieldDefinition={fieldDefinition}
-      placeholder={t('typeEtnia', 'Escriba o seleccione una etnia...')}
+      id="etnia"
+      personAttributeType={personAttributeType}
+      answerConceptSetUuid={config.fieldConfigurations.etnia.answerConceptSetUuid}
+      label={t('etnia', 'Etnia')}
+      customConceptAnswers={[]}
+      required={false}
+      disabled={false}
     />
   );
 }

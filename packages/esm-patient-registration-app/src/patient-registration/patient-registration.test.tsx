@@ -198,19 +198,11 @@ const mockOpenmrsConfig: RegistrationConfig = {
       personAttributeUuid: '',
       answerConceptSetUuid: '',
       allowOther: false,
-      validation: {
-        required: false,
-        matches: '',
-      },
     },
     religion: {
       personAttributeUuid: '',
       answerConceptSetUuid: '',
       allowOther: false,
-      validation: {
-        required: false,
-        matches: '',
-      },
     },
   },
   links: {
