@@ -121,7 +121,7 @@ export const builtInSections: Array<SectionDefinition> = [
     fields: ['id', 'name', 'gender', 'dob'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
-  { id: 'social', name: 'Social Information', fields: ['socialSecurity'] },
+  { id: 'insurance', name: 'Insurance Details', fields: ['socialSecurity'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
   { id: 'address', name: 'Información de Domicilio', fields: ['address'] },
@@ -145,7 +145,7 @@ export const builtInFields = [
 export const esmPatientRegistrationSchema = {
   sections: {
     _type: Type.Array,
-    _default: ['demographics', 'contact', 'social', 'relationships', 'address'],
+    _default: ['demographics', 'contact', 'insurance', 'relationships', 'address'],
     _description: `An array of strings which are the keys from 'sectionDefinitions' or any of the following built-in sections: '${builtInSections
       .map((s) => s.id)
       .join("', '")}'.`,
