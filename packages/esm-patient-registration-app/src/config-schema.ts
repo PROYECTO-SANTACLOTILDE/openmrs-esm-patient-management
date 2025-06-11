@@ -90,6 +90,14 @@ export interface RegistrationConfig {
         matches?: string;
       };
     };
+    socialSecurity: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
   };
   links: {
     submitButton: string;
@@ -110,9 +118,10 @@ export const builtInSections: Array<SectionDefinition> = [
   {
     id: 'demographics',
     name: 'Basic Info',
-    fields: ['name', 'gender', 'dob', 'id'],
+    fields: ['id', 'name', 'gender', 'dob'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
+  { id: 'social', name: 'Social Information', fields: ['socialSecurity'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
   { id: 'address', name: 'Información de Domicilio', fields: ['address'] },
@@ -128,6 +137,7 @@ export const builtInFields = [
   'phone',
   'mobile',
   'email',
+  'socialSecurity',
   'causeOfDeath',
   'dateAndTimeOfDeath',
 ] as const;
@@ -135,7 +145,7 @@ export const builtInFields = [
 export const esmPatientRegistrationSchema = {
   sections: {
     _type: Type.Array,
-    _default: ['demographics', 'contact', 'relationships', 'address'],
+    _default: ['demographics', 'contact', 'social', 'relationships', 'address'],
     _description: `An array of strings which are the keys from 'sectionDefinitions' or any of the following built-in sections: '${builtInSections
       .map((s) => s.id)
       .join("', '")}'.`,
@@ -419,6 +429,26 @@ export const esmPatientRegistrationSchema = {
         matches: {
           _type: Type.String,
           _default: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
+          _description: 'Optional RegEx for testing the validity of the input.',
+        },
+      },
+    },
+    socialSecurity: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: 'd4e5f6g7-8910-1112-1314-151617181920',
+        _description: 'The UUID of the social security person attribute type',
+      },
+      answerConceptSetUuid: {
+        _type: Type.ConceptUuid,
+        _default: '355ee63a-a773-47ab-9841-2505b71dec13',
+        _description: 'The concept set UUID for social security options',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
+        matches: {
+          _type: Type.String,
+          _default: '',
           _description: 'Optional RegEx for testing the validity of the input.',
         },
       },
