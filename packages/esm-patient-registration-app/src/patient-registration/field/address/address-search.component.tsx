@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Search } from '@carbon/react';
 import { useAddressHierarchy } from './address-hierarchy.resource';
+import { useDebounce } from '@openmrs/esm-framework';
 import styles from './address-search.scss';
 
 interface AddressSearchComponentProps {
@@ -16,42 +17,64 @@ const AddressSearchComponent: React.FC<AddressSearchComponentProps> = ({ address
   const wrapper = useRef(null);
   const [searchString, setSearchString] = useState('');
 
-  const { addresses } = useAddressHierarchy(searchString, separator);
+  // Optimización: Debounce para evitar búsquedas excesivas
+  const debouncedSearchString = useDebounce(searchString, 500);
 
+  const { addresses } = useAddressHierarchy(debouncedSearchString, separator);
+
+  // Optimización: Limitar el número de opciones mostradas y memoizar
   const addressOptions: Array<string> = useMemo(() => {
+    if (debouncedSearchString.trim().length < 2 || addresses.length === 0) {
+      return [];
+    }
+
     const options: Set<string> = new Set();
-    addresses.forEach((address) => {
+    const maxResults = 20; // Limitar resultados para mejor rendimiento
+
+    for (const address of addresses) {
+      if (options.size >= maxResults) break;
+
       const values = address.split(separator);
-      values.forEach((val, index) => {
-        if (val.toLowerCase().includes(searchString.toLowerCase())) {
+      for (let index = 0; index < values.length; index++) {
+        if (options.size >= maxResults) break;
+
+        const val = values[index];
+        if (val.toLowerCase().includes(debouncedSearchString.toLowerCase())) {
           options.add(values.slice(0, index + 1).join(separator));
         }
-      });
-    });
-    return [...options];
-  }, [addresses, searchString]);
+      }
+    }
+
+    return Array.from(options).slice(0, maxResults);
+  }, [addresses, debouncedSearchString, separator]);
 
   const { setFieldValue } = useFormikContext();
 
-  const handleInputChange = (e) => {
+  // Optimización: Memoizar el manejador de cambio de input
+  const handleInputChange = useCallback((e) => {
     setSearchString(e.target.value);
-  };
+  }, []);
 
-  const handleChange = (address) => {
-    if (address) {
-      const values = address.split(separator);
-      addressLayout.map(({ name }, index) => {
-        setFieldValue(`address.${name}`, values?.[index] ?? '');
-      });
-      setSearchString('');
-    }
-  };
+  // Optimización: Memoizar el manejador de selección
+  const handleChange = useCallback(
+    (address) => {
+      if (address) {
+        const values = address.split(separator);
+        addressLayout.forEach(({ name }, index) => {
+          setFieldValue(`address.${name}`, values?.[index] ?? '');
+        });
+        setSearchString('');
+      }
+    },
+    [addressLayout, separator, setFieldValue],
+  );
 
-  const handleClickOutsideComponent = (e) => {
+  // Optimización: Memoizar el manejador de click fuera del componente
+  const handleClickOutsideComponent = useCallback((e) => {
     if (wrapper.current && !wrapper.current.contains(e.target)) {
       setSearchString('');
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutsideComponent);
@@ -59,7 +82,7 @@ const AddressSearchComponent: React.FC<AddressSearchComponentProps> = ({ address
     return () => {
       document.removeEventListener('mousedown', handleClickOutsideComponent);
     };
-  }, [wrapper]);
+  }, [handleClickOutsideComponent]);
 
   return (
     <div className={styles.autocomplete} ref={wrapper} style={{ marginBottom: '1rem' }}>

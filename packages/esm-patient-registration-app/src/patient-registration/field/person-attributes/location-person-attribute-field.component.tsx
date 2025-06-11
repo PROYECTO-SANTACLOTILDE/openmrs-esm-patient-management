@@ -6,6 +6,7 @@ import styles from './../field.scss';
 import { useLocations } from './location-person-attribute-field.resource';
 import { ComboBox, InlineLoading, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
+import { useDebounce } from '@openmrs/esm-framework';
 
 export interface LocationPersonAttributeFieldProps {
   id: string;
@@ -26,12 +27,18 @@ export function LocationPersonAttributeField({
   const fieldName = `attributes.${personAttributeType.uuid}`;
   const [field, meta, { setValue }] = useField(`attributes.${personAttributeType.uuid}`);
   const [searchQuery, setSearchQuery] = useState('');
-  const { locations, isLoading, loadingNewData } = useLocations(locationTag || null, searchQuery);
+
+  // Optimización: Debounce local para evitar búsquedas excesivas
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const { locations, isLoading, loadingNewData } = useLocations(locationTag || null, debouncedSearchQuery);
   const prevLocationOptions = useRef([]);
 
+  // Optimización: Memoizar las opciones de ubicación y limitar resultados
   const locationOptions = useMemo(() => {
     if (!(isLoading && loadingNewData)) {
-      const newOptions = locations.map(({ resource: { id, name } }) => ({ value: id, label: name }));
+      const newOptions = locations
+        .slice(0, 20) // Limitar a 20 resultados para mejor rendimiento
+        .map(({ resource: { id, name } }) => ({ value: id, label: name }));
       prevLocationOptions.current = newOptions;
       return newOptions;
     }
@@ -48,20 +55,24 @@ export function LocationPersonAttributeField({
     return null;
   }, [locationOptions, meta.value]);
 
-  // Callback for when updating the combobox input
+  // Optimización: Memoizar el manejador de cambio de input
   const handleInputChange = useCallback(
     (value: string | null) => {
       if (value) {
-        // If the value exists in the locationOptions (i.e. a label matches the input), exit the function
+        // Si el valor existe en locationOptions (es decir, una etiqueta coincide con la entrada), salir de la función
         if (locationOptions.find(({ label }) => label === value)) return;
-        // If the input is a new value, set the search query
-        setSearchQuery(value);
-        // Clear the current selected value since the input doesn't match any existing options
+        // Solo actualizar si es diferente del valor actual para evitar renders innecesarios
+        if (value !== searchQuery) {
+          setSearchQuery(value);
+        }
+        // Limpiar el valor seleccionado actual ya que la entrada no coincide con ninguna opción existente
         setValue(null);
       }
     },
-    [locationOptions, setValue],
+    [locationOptions, setValue, searchQuery],
   );
+
+  // Optimización: Memoizar el manejador de selección
   const handleSelect = useCallback(
     ({ selectedItem }) => {
       if (selectedItem) {

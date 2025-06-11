@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useField } from 'formik';
 import useSWRImmutable from 'swr/immutable';
-import { type FetchResponse, openmrsFetch } from '@openmrs/esm-framework';
+import { type FetchResponse, openmrsFetch, useDebounce } from '@openmrs/esm-framework';
 import { usePatientRegistrationContext } from '../../patient-registration-context';
 
 interface AddressFields {
@@ -25,10 +25,16 @@ export function useOrderedAddressHierarchyLevels() {
 }
 
 export function useAddressEntries(fetchResults, searchString) {
-  const encodedSearchString = encodeURIComponent(searchString);
+  // Optimización: Debounce para evitar consultas excesivas
+  const debouncedSearchString = useDebounce(searchString, 300);
+  const encodedSearchString = encodeURIComponent(debouncedSearchString);
+
+  // Solo hacer consulta si hay texto para buscar y fetchResults es true
+  const shouldFetch = fetchResults && debouncedSearchString.length > 0;
+
   const { data, isLoading, error } = useSWRImmutable<FetchResponse<Array<{ name: string }>>>(
-    fetchResults
-      ? `module/addresshierarchy/ajax/getChildAddressHierarchyEntries.form?searchString=${encodedSearchString}`
+    shouldFetch
+      ? `module/addresshierarchy/ajax/getChildAddressHierarchyEntries.form?searchString=${encodedSearchString}&limit=50`
       : null,
     openmrsFetch,
   );
@@ -41,7 +47,7 @@ export function useAddressEntries(fetchResults, searchString) {
 
   const results = useMemo(
     () => ({
-      entries: data?.data?.map((item) => item.name),
+      entries: data?.data?.map((item) => item.name)?.slice(0, 20) || [], // Limitar a 20 resultados
       isLoadingAddressEntries: isLoading,
       errorFetchingAddressEntries: error,
     }),
@@ -103,6 +109,12 @@ export function useAddressEntryFetchConfig(addressField: string) {
 }
 
 export function useAddressHierarchy(searchString: string, separator: string) {
+  // Optimización: Debounce para evitar consultas excesivas
+  const debouncedSearchString = useDebounce(searchString, 500);
+
+  // Solo hacer consulta si hay al menos 2 caracteres
+  const shouldSearch = debouncedSearchString.trim().length >= 2;
+
   const { data, error, isLoading } = useSWRImmutable<
     FetchResponse<
       Array<{
@@ -111,8 +123,10 @@ export function useAddressHierarchy(searchString: string, separator: string) {
     >,
     Error
   >(
-    searchString
-      ? `/module/addresshierarchy/ajax/getPossibleFullAddresses.form?separator=${separator}&searchString=${searchString}`
+    shouldSearch
+      ? `/module/addresshierarchy/ajax/getPossibleFullAddresses.form?separator=${encodeURIComponent(
+          separator,
+        )}&searchString=${encodeURIComponent(debouncedSearchString)}&limit=30`
       : null,
     openmrsFetch,
   );
