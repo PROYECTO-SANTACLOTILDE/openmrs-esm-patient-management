@@ -176,12 +176,12 @@ export const RelationshipsSection = () => {
         .filter((type) => allowedRelationshipTypes.length === 0 || allowedRelationshipTypes.includes(type.uuid))
         .forEach((type) => {
           const aIsToB = {
-            display: `${type.displayAIsToB} -> ${type.displayBIsToA}`,
+            display: `${type.displayAIsToB} del Paciente`,
             uuid: type.uuid,
             direction: 'aIsToB',
           };
           const bIsToA = {
-            display: `${type.displayBIsToA} -> ${type.displayAIsToB}`,
+            display: `${type.displayBIsToA} del Paciente (${type.displayAIsToB})`,
             uuid: type.uuid,
             direction: 'bIsToA',
           };
