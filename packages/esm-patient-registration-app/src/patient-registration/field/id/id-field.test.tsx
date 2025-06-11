@@ -100,7 +100,7 @@ describe('Identifiers', () => {
     );
 
     expect(screen.getByText('Identifiers')).toBeInTheDocument();
-    const configureButton = screen.getByRole('button', { name: 'Configure' });
+    const configureButton = screen.getByRole('button', { name: /select identifier|configure/i });
     expect(configureButton).toBeInTheDocument();
     expect(configureButton).toBeEnabled();
   });
@@ -121,7 +121,7 @@ describe('Identifiers', () => {
       mockResourcesContextValue,
     );
 
-    const configureButton = screen.getByRole('button', { name: 'Configure' });
+    const configureButton = screen.getByRole('button', { name: /select identifier|configure/i });
     await user.click(configureButton);
 
     expect(screen.getByRole('button', { name: 'Close overlay' })).toBeInTheDocument();

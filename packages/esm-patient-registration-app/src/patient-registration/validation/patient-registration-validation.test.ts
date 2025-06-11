@@ -40,9 +40,12 @@ describe('Patient registration validation', () => {
     causeOfDeath: null,
     deathDate: null,
     email: 'john.doe@example.com',
-    familyName: 'Doe',
+    fathersFamilyName: 'Doe',
+    mothersFamilyName: 'Smith',
     gender: 'male',
     givenName: 'John',
+    etnia: '',
+    religion: '',
     identifiers: {
       nationalId: {
         required: true,
@@ -81,13 +84,22 @@ describe('Patient registration validation', () => {
     expect(validationError.errors).toContain('Given name is required');
   });
 
-  it('should require familyName', async () => {
+  it('should require fathersFamilyName', async () => {
     const invalidFormValues = {
       ...validFormValues,
-      familyName: '',
+      fathersFamilyName: '',
     };
     const validationError = await validateFormValues(invalidFormValues);
-    expect(validationError.errors).toContain('Family name is required');
+    expect(validationError.errors).toContain('Fathers Family name is required');
+  });
+
+  it('should require mothersFamilyName', async () => {
+    const invalidFormValues = {
+      ...validFormValues,
+      mothersFamilyName: '',
+    };
+    const validationError = await validateFormValues(invalidFormValues);
+    expect(validationError.errors).toContain('Mothers Family name is required');
   });
 
   it('should require additionalGivenName when addNameInLocalLanguage is true', async () => {

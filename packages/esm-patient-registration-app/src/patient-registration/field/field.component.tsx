@@ -14,6 +14,8 @@ import { MobileField } from './phone/mobile-field.component';
 import { EmailField } from './email/email-field.component';
 import { SocialSecurityField } from './social-security/social-security-field.component';
 import { CivilStatusField } from './civil-status/civil-status-field.component';
+import { EtniaField } from './etnia/etnia-field.component';
+import { ReligionField } from './religion/religion-field.component';
 
 export interface FieldProps {
   name: string;
@@ -59,6 +61,10 @@ export function Field({ name }: FieldProps) {
       return <SocialSecurityField />;
     case 'civilStatus':
       return <CivilStatusField />;
+    case 'etnia':
+      return <EtniaField />;
+    case 'religion':
+      return <ReligionField />;
     default:
       return <CustomField name={name} />;
   }

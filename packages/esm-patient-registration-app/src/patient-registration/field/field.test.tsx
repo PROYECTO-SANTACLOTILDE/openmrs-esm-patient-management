@@ -218,7 +218,7 @@ describe('Field', () => {
       mockResourcesContextValue,
     );
 
-    expect(screen.getByText('Address')).toBeInTheDocument();
+    expect(screen.getByText(/dirección actual|address/i)).toBeInTheDocument();
   });
 
   it('should render Identifiers component when name prop is "id"', () => {

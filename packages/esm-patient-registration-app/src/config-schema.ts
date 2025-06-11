@@ -105,6 +105,24 @@ export interface RegistrationConfig {
       singleStatusConceptUuid: string;
       marriageableAge: number;
     };
+    etnia: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      allowOther: boolean;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
+    religion: {
+      personAttributeUuid: string;
+      answerConceptSetUuid: string;
+      allowOther: boolean;
+      validation?: {
+        required: boolean;
+        matches?: string;
+      };
+    };
   };
   links: {
     submitButton: string;
@@ -125,7 +143,7 @@ export const builtInSections: Array<SectionDefinition> = [
   {
     id: 'demographics',
     name: 'Basic Info',
-    fields: ['name', 'gender', 'dob', 'id'],
+    fields: ['id', 'name', 'gender', 'dob', 'civilStatus', 'etnia', 'religion'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
   { id: 'insurances', name: 'Insurance Details', fields: ['socialSecurity'] },
@@ -146,6 +164,8 @@ export const builtInFields = [
   'email',
   'socialSecurity',
   'civilStatus',
+  'etnia',
+  'religion',
   'causeOfDeath',
   'dateAndTimeOfDeath',
 ] as const;
@@ -482,6 +502,56 @@ export const esmPatientRegistrationSchema = {
         _type: Type.Number,
         _default: 18,
         _description: 'Minimum age for marriage - patients below this age will automatically have single status',
+      },
+    },
+    etnia: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: '8d871386-c2cc-11de-8d13-0010c6dffd0f',
+        _description: 'The UUID of the etnia person attribute type',
+      },
+      answerConceptSetUuid: {
+        _type: Type.UUID,
+        _default: '70482c1e-181e-416d-a0c4-a93919f9f2ef',
+        _description: 'Concept set UUID for etnia options',
+      },
+      allowOther: {
+        _type: Type.Boolean,
+        _default: true,
+        _description: 'Whether to allow custom/other values not in the concept set',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
+        matches: {
+          _type: Type.String,
+          _default: '',
+          _description: 'Optional RegEx for testing the validity of the input.',
+        },
+      },
+    },
+    religion: {
+      personAttributeUuid: {
+        _type: Type.UUID,
+        _default: '77bbb234-2312-4644-99d0-fa894d438817',
+        _description: 'The UUID of the religion person attribute type',
+      },
+      answerConceptSetUuid: {
+        _type: Type.UUID,
+        _default: '6de6d87e-5af8-41d9-98d2-b660fabf25d9',
+        _description: 'Concept set UUID for religion options',
+      },
+      allowOther: {
+        _type: Type.Boolean,
+        _default: true,
+        _description: 'Whether to allow custom/other values not in the concept set',
+      },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
+        matches: {
+          _type: Type.String,
+          _default: '',
+          _description: 'Optional RegEx for testing the validity of the input.',
+        },
       },
     },
   },
