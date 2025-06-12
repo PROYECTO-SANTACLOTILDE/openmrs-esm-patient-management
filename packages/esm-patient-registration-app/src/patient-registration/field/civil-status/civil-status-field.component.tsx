@@ -48,16 +48,10 @@ export function CivilStatusField() {
 
   // Auto-set civil status to single for minors
   useEffect(() => {
-    if (isUnderMarriageableAge && !civilStatusField.value) {
+    if (isUnderMarriageableAge) {
       setFieldValue(fieldName, config.fieldConfigurations.civilStatus.singleConceptUuid);
     }
-  }, [
-    isUnderMarriageableAge,
-    civilStatusField.value,
-    setFieldValue,
-    fieldName,
-    config.fieldConfigurations.civilStatus.singleConceptUuid,
-  ]);
+  }, [isUnderMarriageableAge, setFieldValue, fieldName, config.fieldConfigurations.civilStatus.singleConceptUuid]);
 
   const answers = useMemo(() => {
     return isLoadingConceptAnswers || !conceptAnswers
