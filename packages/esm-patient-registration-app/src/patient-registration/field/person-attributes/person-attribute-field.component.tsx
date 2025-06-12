@@ -26,6 +26,7 @@ export function PersonAttributeField({ fieldDefinition }: PersonAttributeFieldPr
           <TextPersonAttributeField
             personAttributeType={personAttributeType}
             validationRegex={fieldDefinition.validation?.matches ?? ''}
+            invalidText={fieldDefinition.validation?.invalidText ?? ''}
             label={fieldDefinition.label}
             required={fieldDefinition.validation?.required ?? false}
             id={fieldDefinition?.id}

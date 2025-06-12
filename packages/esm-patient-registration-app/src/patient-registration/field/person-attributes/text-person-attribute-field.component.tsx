@@ -10,6 +10,7 @@ export interface TextPersonAttributeFieldProps {
   id: string;
   personAttributeType: PersonAttributeTypeResponse;
   validationRegex?: string;
+  invalidText?: string;
   label?: string;
   required?: boolean;
 }
@@ -18,6 +19,7 @@ export function TextPersonAttributeField({
   id,
   personAttributeType,
   validationRegex,
+  invalidText,
   label,
   required,
 }: TextPersonAttributeFieldProps) {
@@ -31,7 +33,7 @@ export function TextPersonAttributeField({
     if (regex.test(value)) {
       return;
     } else {
-      return t('invalidInput', 'Invalid Input');
+      return invalidText || t('invalidInput', 'Invalid Input');
     }
   };
 

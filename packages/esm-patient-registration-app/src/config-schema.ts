@@ -19,6 +19,7 @@ export interface FieldDefinition {
   validation?: {
     required: boolean;
     matches?: string;
+    invalidText?: string;
   };
   locationTag?: string;
   answerConceptSetUuid?: string;
@@ -74,6 +75,7 @@ export interface RegistrationConfig {
       validation?: {
         required: boolean;
         matches?: string;
+        invalidText?: string;
       };
     };
     email: {
@@ -81,6 +83,7 @@ export interface RegistrationConfig {
       validation?: {
         required: boolean;
         matches?: string;
+        invalidText?: string;
       };
     };
     mobile: {
@@ -88,6 +91,7 @@ export interface RegistrationConfig {
       validation?: {
         required: boolean;
         matches?: string;
+        invalidText?: string;
       };
     };
     socialSecurity: {
@@ -238,6 +242,11 @@ export const esmPatientRegistrationSchema = {
           _type: Type.String,
           _default: null,
           _description: 'Optional RegEx for testing the validity of the input.',
+        },
+        invalidText: {
+          _type: Type.String,
+          _default: null,
+          _description: 'Custom error message to display when validation fails.',
         },
       },
       locationTag: {
@@ -414,6 +423,11 @@ export const esmPatientRegistrationSchema = {
           _default: "^(\\+51\\s?)?(1\\d{7}|[2-8]\\d{6,7})$",
           _description: 'RegEx para teléfonos fijos peruanos: con o sin +51, 7 u 8 dígitos, Lima (1xxxxxxx) o provincias ([2-8]xxxxxxx).',
         },
+        invalidText: {
+          _type: Type.String,
+          _default: "Ingrese un número de teléfono válido. Para Lima: 8 dígitos comenzando con 1. Para provincias: 7-8 dígitos comenzando con 2-8. Puede incluir +51.",
+          _description: 'Mensaje personalizado cuando la validación del teléfono falla.',
+        },
       },
     },
     mobile: {
@@ -421,13 +435,18 @@ export const esmPatientRegistrationSchema = {
         _type: Type.UUID,
         _default: 'fee4e8ef-aef8-4bb9-8ed0-7ded6055c61f',
         _description: 'TO CHANGE The UUID of the mobile number person attribute type',
-        validation: {
-        required: { _type: Type.Boolean, _default: false },
       },
+      validation: {
+        required: { _type: Type.Boolean, _default: false },
         matches: {
           _type: Type.String,
           _default: "^(\\+51\\s?)?9\\d{8}$",
           _description: 'RegEx para celulares peruanos: con o sin +51, empieza con 9 y tiene 9 dígitos.',
+        },
+        invalidText: {
+          _type: Type.String,
+          _default: "Ingrese un número de celular válido. Debe comenzar con 9 y tener 9 dígitos. Puede incluir +51.",
+          _description: 'Mensaje personalizado cuando la validación del celular falla.',
         },
       },
     },
@@ -443,6 +462,11 @@ export const esmPatientRegistrationSchema = {
           _type: Type.String,
           _default: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
           _description: 'Optional RegEx for testing the validity of the input.',
+        },
+        invalidText: {
+          _type: Type.String,
+          _default: "Ingrese una dirección de correo electrónico válida. Ejemplo: usuario@dominio.com",
+          _description: 'Mensaje personalizado cuando la validación del email falla.',
         },
       },
     },
