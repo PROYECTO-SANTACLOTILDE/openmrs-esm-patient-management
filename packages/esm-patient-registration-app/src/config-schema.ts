@@ -137,7 +137,7 @@ export const builtInSections: Array<SectionDefinition> = [
     fields: ['id', 'name', 'gender', 'dob', 'civilStatus'],
   },
   { id: 'contact', name: 'Contact Details', fields: ['phone', 'mobile', 'email'] },
-  { id: 'insurance', name: 'Detalles del Financiado', fields: ['socialSecurity'] },
+  { id: 'insurance', name: 'Detalles del Financiador', fields: ['socialSecurity'] },
   { id: 'death', name: 'Death Info', fields: ['dateAndTimeOfDeath', 'causeOfDeath'] },
   { id: 'relationships', name: 'Relationships', fields: [] },
   { id: 'address', name: 'Información de Domicilio', fields: ['address'] },
