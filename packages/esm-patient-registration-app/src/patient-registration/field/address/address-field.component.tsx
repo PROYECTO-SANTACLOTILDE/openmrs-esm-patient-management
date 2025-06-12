@@ -15,7 +15,11 @@ import AddressSearchComponent from './address-search.component';
 import styles from '../field.scss';
 import { type AddressTemplate } from '../../patient-registration.types';
 
-export const AddressComponent: React.FC = () => {
+export interface AddressComponentProps {
+  fieldPrefix?: string;
+}
+
+export const AddressComponent: React.FC<AddressComponentProps> = ({ fieldPrefix = 'address' }) => {
   const config = useConfig();
   const { t } = useTranslation();
   const { setFieldValue } = usePatientRegistrationContext();
@@ -54,10 +58,10 @@ export const AddressComponent: React.FC = () => {
   useEffect(() => {
     if (addressTemplate?.elementDefaults) {
       Object.entries(addressTemplate.elementDefaults).forEach(([name, defaultValue]) => {
-        setFieldValue(`address.${name}`, defaultValue);
+        setFieldValue(`${fieldPrefix}.${name}`, defaultValue);
       });
     }
-  }, [addressTemplate, setFieldValue]);
+  }, [addressTemplate, setFieldValue, fieldPrefix]);
 
   const orderedAddressFields = useMemo(() => {
     if (isLoadingFieldOrder || errorFetchingFieldOrder) {
@@ -85,7 +89,7 @@ export const AddressComponent: React.FC = () => {
         {addressLayout.map((attributes, index) => (
           <Input
             key={`combo_input_${index}`}
-            name={`address.${attributes.name}`}
+            name={`${fieldPrefix}.${attributes.name}`}
             labelText={t(attributes.label)}
             id={attributes.name}
             value={selected}
@@ -119,14 +123,14 @@ export const AddressComponent: React.FC = () => {
 
   return (
     <AddressComponentContainer>
-      {useQuickSearch && <AddressSearchComponent addressLayout={orderedAddressFields} />}
+      {useQuickSearch && <AddressSearchComponent addressLayout={orderedAddressFields} fieldPrefix={fieldPrefix} />}
       {searchAddressByLevel ? (
-        <AddressHierarchyLevels orderedAddressFields={orderedAddressFields} />
+        <AddressHierarchyLevels orderedAddressFields={orderedAddressFields} fieldPrefix={fieldPrefix} />
       ) : (
         orderedAddressFields.map((attributes, index) => (
           <Input
             key={`combo_input_${index}`}
-            name={`address.${attributes.name}`}
+            name={`${fieldPrefix}.${attributes.name}`}
             labelText={t(attributes.label)}
             id={attributes.name}
             value={selected}

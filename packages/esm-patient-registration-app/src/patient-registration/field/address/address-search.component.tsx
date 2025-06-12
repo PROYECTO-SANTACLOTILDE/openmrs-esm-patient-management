@@ -8,9 +8,10 @@ import styles from './address-search.scss';
 
 interface AddressSearchComponentProps {
   addressLayout: Array<any>;
+  fieldPrefix?: string;
 }
 
-const AddressSearchComponent: React.FC<AddressSearchComponentProps> = ({ addressLayout }) => {
+const AddressSearchComponent: React.FC<AddressSearchComponentProps> = ({ addressLayout, fieldPrefix = 'address' }) => {
   const { t } = useTranslation();
   const separator = ' > ';
   const searchBox = useRef(null);
@@ -61,12 +62,12 @@ const AddressSearchComponent: React.FC<AddressSearchComponentProps> = ({ address
       if (address) {
         const values = address.split(separator);
         addressLayout.forEach(({ name }, index) => {
-          setFieldValue(`address.${name}`, values?.[index] ?? '');
+          setFieldValue(`${fieldPrefix}.${name}`, values?.[index] ?? '');
         });
         setSearchString('');
       }
     },
-    [addressLayout, separator, setFieldValue],
+    [addressLayout, separator, setFieldValue, fieldPrefix],
   );
 
   // Optimización: Memoizar el manejador de click fuera del componente

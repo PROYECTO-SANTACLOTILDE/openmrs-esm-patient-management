@@ -2,6 +2,7 @@ import React from 'react';
 import { reportError, useConfig } from '@openmrs/esm-framework';
 import { builtInFields, type RegistrationConfig } from '../../config-schema';
 import { AddressComponent } from './address/address-field.component';
+import { AlternativeAddressField } from './address/alternative-address-field.component';
 import { CauseOfDeathField } from './cause-of-death/cause-of-death.component';
 import { CivilStatusField } from './civil-status/civil-status-field.component';
 import { CustomField } from './custom-field.component';
@@ -47,6 +48,8 @@ export function Field({ name }: FieldProps) {
       return <CauseOfDeathField />;
     case 'address':
       return <AddressComponent />;
+    case 'alternativeAddress':
+      return <AlternativeAddressField />;
     case 'id':
       return <Identifiers />;
     case 'phone':

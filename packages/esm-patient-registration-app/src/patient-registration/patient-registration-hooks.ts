@@ -69,6 +69,8 @@ export function useInitialFormValues(
     additionalMiddleName: '',
     addNameInLocalLanguage: false,
     address: {},
+    addressMatches: true,
+    alternativeAddress: {},
     birthdate: null,
     birthdateEstimated: false,
     deathCause: '',

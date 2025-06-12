@@ -165,6 +165,10 @@ export interface FormValues {
   address: {
     [addressField: string]: string;
   };
+  addressMatches?: boolean;
+  alternativeAddress?: {
+    [addressField: string]: string;
+  };
   attributes?: {
     [attributeTypeUuid: string]: string;
   };

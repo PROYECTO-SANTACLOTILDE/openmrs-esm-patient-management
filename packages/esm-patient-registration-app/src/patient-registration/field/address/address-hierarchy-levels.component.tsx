@@ -12,15 +12,17 @@ interface AddressComboBoxProps {
     label: string;
     required?: boolean;
   };
+  fieldPrefix?: string;
 }
 
 interface AddressHierarchyLevelsProps {
   orderedAddressFields: Array<any>;
+  fieldPrefix?: string;
 }
 
-const AddressComboBox: React.FC<AddressComboBoxProps> = ({ attribute }) => {
+const AddressComboBox: React.FC<AddressComboBoxProps> = ({ attribute, fieldPrefix = 'address' }) => {
   const { t } = useTranslation();
-  const [field, meta, { setValue }] = useField(`address.${attribute.name}`);
+  const [field, meta, { setValue }] = useField(`${fieldPrefix}.${attribute.name}`);
   const { fetchEntriesForField, searchString, updateChildElements } = useAddressEntryFetchConfig(attribute.name);
   const { entries } = useAddressEntries(fetchEntriesForField, searchString);
   const label = t(attribute.label) + (attribute?.required ? '' : ` (${t('optional', 'optional')})`);
@@ -46,7 +48,7 @@ const AddressComboBox: React.FC<AddressComboBoxProps> = ({ attribute }) => {
     <ComboInput
       entries={entries}
       handleSelection={handleSelection}
-      name={`address.${attribute.name}`}
+      name={`${fieldPrefix}.${attribute.name}`}
       fieldProps={{
         ...field,
         id: attribute.name,
@@ -58,11 +60,14 @@ const AddressComboBox: React.FC<AddressComboBoxProps> = ({ attribute }) => {
   );
 };
 
-const AddressHierarchyLevels: React.FC<AddressHierarchyLevelsProps> = ({ orderedAddressFields }) => {
+const AddressHierarchyLevels: React.FC<AddressHierarchyLevelsProps> = ({
+  orderedAddressFields,
+  fieldPrefix = 'address',
+}) => {
   return (
     <>
       {orderedAddressFields.map((attribute) => (
-        <AddressComboBox key={attribute.id} attribute={attribute} />
+        <AddressComboBox key={attribute.id} attribute={attribute} fieldPrefix={fieldPrefix} />
       ))}
     </>
   );
