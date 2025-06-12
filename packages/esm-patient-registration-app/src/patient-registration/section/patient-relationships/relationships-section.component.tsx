@@ -130,12 +130,17 @@ const RelationshipView: React.FC<RelationshipViewProps> = ({
             labelText={t('relationship', 'Relationship')}
             onChange={handleRelationshipTypeChange}
             name={`relationships[${index}].relationshipType`}
-            defaultValue={relationship?.relationshipType ?? 'placeholder-item'}>
+            defaultValue={relationship?.relationshipType ?? 'placeholder-item'}
+            disabled={!relationship.relatedPersonUuid}>
             <SelectItem
               disabled
               hidden
               value="placeholder-item"
-              text={t('relationshipToPatient', 'Relationship to patient')}
+              text={
+                !relationship.relatedPersonUuid
+                  ? t('selectPersonFirst', 'Seleccione una persona primero')
+                  : t('relationshipToPatient', 'Relationship to patient')
+              }
             />
             {displayRelationshipTypes.map((relationshipType, index) => (
               <SelectItem
